@@ -31,6 +31,7 @@ CREATE TABLE `Cricket_Match` (
   `Team1_ID` int(11) DEFAULT NULL,
   `Team2_ID` int(11) DEFAULT NULL,
   `Winner` int(11) DEFAULT NULL,
+  `Stage` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`Match_ID`),
   KEY `fkt` (`Tournament_ID`),
   KEY `fkv` (`Venue_ID`),
@@ -53,29 +54,30 @@ LOCK TABLES `Cricket_Match` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Fixture`
+-- Table structure for table `Inning`
 --
 
-DROP TABLE IF EXISTS `Fixture`;
+DROP TABLE IF EXISTS `Inning`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Fixture` (
-  `Fixture_ID` int(11) NOT NULL,
-  `Match_ID` int(11) DEFAULT NULL,
-  `Stage` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`Fixture_ID`),
-  KEY `fkmatch` (`Match_ID`),
-  CONSTRAINT `fkmatch` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`)
+CREATE TABLE `Inning` (
+  `Match_ID` int(11) NOT NULL,
+  `Inning_Number` int(11) NOT NULL,
+  `Total_Score` int(11) DEFAULT NULL,
+  `Overs` float DEFAULT NULL,
+  `Total_wickets` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Match_ID`,`Inning_Number`),
+  CONSTRAINT `fkm` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Fixture`
+-- Dumping data for table `Inning`
 --
 
-LOCK TABLES `Fixture` WRITE;
-/*!40000 ALTER TABLE `Fixture` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Fixture` ENABLE KEYS */;
+LOCK TABLES `Inning` WRITE;
+/*!40000 ALTER TABLE `Inning` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Inning` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -105,35 +107,6 @@ CREATE TABLE `Player` (
 LOCK TABLES `Player` WRITE;
 /*!40000 ALTER TABLE `Player` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Player` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Scorecard`
---
-
-DROP TABLE IF EXISTS `Scorecard`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Scorecard` (
-  `Scorecard_ID` int(11) NOT NULL,
-  `Match_ID` int(11) NOT NULL,
-  `Inning_Number` int(11) DEFAULT NULL,
-  `Total_Score` int(11) DEFAULT NULL,
-  `Overs` float DEFAULT NULL,
-  `Total_wickets` int(11) DEFAULT NULL,
-  PRIMARY KEY (`Scorecard_ID`),
-  KEY `fkm` (`Match_ID`),
-  CONSTRAINT `fkm` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Scorecard`
---
-
-LOCK TABLES `Scorecard` WRITE;
-/*!40000 ALTER TABLE `Scorecard` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Scorecard` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -240,6 +213,44 @@ LOCK TABLES `Venue` WRITE;
 /*!40000 ALTER TABLE `Venue` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Venue` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `ball_by_ball`
+--
+
+DROP TABLE IF EXISTS `ball_by_ball`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ball_by_ball` (
+  `over_no` int(11) NOT NULL,
+  `bowl_no` int(11) NOT NULL,
+  `run_taken` int(11) DEFAULT NULL,
+  `wicket` int(11) DEFAULT NULL,
+  `on_strike` int(11) DEFAULT NULL,
+  `other_end` int(11) DEFAULT NULL,
+  `bowler` int(11) DEFAULT NULL,
+  `Match_ID` int(11) DEFAULT NULL,
+  `Inning_Number` int(11) DEFAULT NULL,
+  PRIMARY KEY (`over_no`,`bowl_no`),
+  KEY `on_strike` (`on_strike`),
+  KEY `other_end` (`other_end`),
+  KEY `bowler` (`bowler`),
+  KEY `fk` (`Match_ID`,`Inning_Number`),
+  CONSTRAINT `ball_by_ball_ibfk_1` FOREIGN KEY (`on_strike`) REFERENCES `Player` (`Player_ID`),
+  CONSTRAINT `ball_by_ball_ibfk_2` FOREIGN KEY (`other_end`) REFERENCES `Player` (`Player_ID`),
+  CONSTRAINT `ball_by_ball_ibfk_3` FOREIGN KEY (`bowler`) REFERENCES `Player` (`Player_ID`),
+  CONSTRAINT `fk` FOREIGN KEY (`Match_ID`, `Inning_Number`) REFERENCES `Inning` (`Match_ID`, `Inning_Number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ball_by_ball`
+--
+
+LOCK TABLES `ball_by_ball` WRITE;
+/*!40000 ALTER TABLE `ball_by_ball` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ball_by_ball` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -250,4 +261,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2024-10-08  0:58:00
+-- Dump completed on 2024-10-15 21:53:51
