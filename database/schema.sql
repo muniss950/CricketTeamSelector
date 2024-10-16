@@ -110,6 +110,35 @@ LOCK TABLES `Player` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Player_List`
+--
+
+DROP TABLE IF EXISTS `Player_List`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Player_List` (
+  `Player_ID` int(11) NOT NULL,
+  `Team_ID` int(11) NOT NULL,
+  `Match_ID` int(11) NOT NULL,
+  PRIMARY KEY (`Player_ID`,`Team_ID`,`Match_ID`),
+  KEY `Team_ID` (`Team_ID`),
+  KEY `Match_ID` (`Match_ID`),
+  CONSTRAINT `Player_List_ibfk_1` FOREIGN KEY (`Team_ID`) REFERENCES `Team` (`Team_ID`),
+  CONSTRAINT `Player_List_ibfk_2` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`),
+  CONSTRAINT `fkp` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Player_List`
+--
+
+LOCK TABLES `Player_List` WRITE;
+/*!40000 ALTER TABLE `Player_List` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Player_List` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Team`
 --
 
@@ -261,4 +290,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2024-10-15 21:53:51
+-- Dump completed on 2024-10-16  9:23:20
