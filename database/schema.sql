@@ -17,6 +17,67 @@
 /*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
+-- Table structure for table `Batting`
+--
+
+DROP TABLE IF EXISTS `Batting`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Batting` (
+  `Player_ID` int(11) NOT NULL,
+  `Match_ID` int(11) NOT NULL,
+  `Runs_Scored` int(11) DEFAULT 0,
+  `Balls_Faced` int(11) DEFAULT 0,
+  `Fours` int(11) DEFAULT 0,
+  `Sixes` int(11) DEFAULT 0,
+  PRIMARY KEY (`Player_ID`,`Match_ID`),
+  KEY `Match_ID` (`Match_ID`),
+  CONSTRAINT `Batting_ibfk_1` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`),
+  CONSTRAINT `Batting_ibfk_2` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Batting`
+--
+
+LOCK TABLES `Batting` WRITE;
+/*!40000 ALTER TABLE `Batting` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Batting` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Bowling`
+--
+
+DROP TABLE IF EXISTS `Bowling`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Bowling` (
+  `Player_ID` int(11) NOT NULL,
+  `Match_ID` int(11) NOT NULL,
+  `Overs_Bowled` int(11) DEFAULT 0,
+  `Balls_Bowled` int(11) DEFAULT 0,
+  `Runs_Conceded` int(11) DEFAULT 0,
+  `Wickets_Taken` int(11) DEFAULT 0,
+  `Maiden_Overs` int(11) DEFAULT 0,
+  PRIMARY KEY (`Player_ID`,`Match_ID`),
+  KEY `Match_ID` (`Match_ID`),
+  CONSTRAINT `Bowling_ibfk_1` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`),
+  CONSTRAINT `Bowling_ibfk_2` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Bowling`
+--
+
+LOCK TABLES `Bowling` WRITE;
+/*!40000 ALTER TABLE `Bowling` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Bowling` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Cricket_Match`
 --
 
@@ -24,23 +85,20 @@ DROP TABLE IF EXISTS `Cricket_Match`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Cricket_Match` (
-  `Match_ID` int(11) NOT NULL,
+  `Match_ID` int(11) NOT NULL AUTO_INCREMENT,
   `Match_Date` date NOT NULL,
   `Tournament_ID` int(11) DEFAULT NULL,
-  `Venue_ID` int(11) DEFAULT NULL,
   `Team1_ID` int(11) DEFAULT NULL,
   `Team2_ID` int(11) DEFAULT NULL,
   `Winner` int(11) DEFAULT NULL,
   `Stage` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`Match_ID`),
   KEY `fkt` (`Tournament_ID`),
-  KEY `fkv` (`Venue_ID`),
   KEY `Team1_ID` (`Team1_ID`),
   KEY `Team2_ID` (`Team2_ID`),
   CONSTRAINT `Cricket_Match_ibfk_1` FOREIGN KEY (`Team1_ID`) REFERENCES `Team` (`Team_ID`),
   CONSTRAINT `Cricket_Match_ibfk_2` FOREIGN KEY (`Team2_ID`) REFERENCES `Team` (`Team_ID`),
-  CONSTRAINT `fkt` FOREIGN KEY (`Tournament_ID`) REFERENCES `Tournament` (`Tournament_ID`),
-  CONSTRAINT `fkv` FOREIGN KEY (`Venue_ID`) REFERENCES `Venue` (`Venue_ID`)
+  CONSTRAINT `fkt` FOREIGN KEY (`Tournament_ID`) REFERENCES `Tournament` (`Tournament_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -88,7 +146,7 @@ DROP TABLE IF EXISTS `Player`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Player` (
-  `Player_ID` int(11) NOT NULL,
+  `Player_ID` int(11) NOT NULL AUTO_INCREMENT,
   `Player_Name` varchar(100) NOT NULL,
   `Age` int(11) DEFAULT NULL,
   `Gender` enum('M','F','O') DEFAULT NULL,
@@ -146,7 +204,7 @@ DROP TABLE IF EXISTS `Team`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Team` (
-  `Team_ID` int(11) NOT NULL,
+  `Team_ID` int(11) NOT NULL AUTO_INCREMENT,
   `Team_Name` varchar(100) NOT NULL,
   `Team_Type` varchar(20) DEFAULT NULL,
   `Captain_ID` int(11) DEFAULT NULL,
@@ -199,7 +257,7 @@ DROP TABLE IF EXISTS `Tournament`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Tournament` (
-  `Tournament_ID` int(11) NOT NULL,
+  `Tournament_ID` int(11) NOT NULL AUTO_INCREMENT,
   `Tournament_Name` varchar(100) NOT NULL,
   `Format` varchar(10) DEFAULT NULL,
   `Level` varchar(20) DEFAULT NULL,
@@ -216,31 +274,6 @@ CREATE TABLE `Tournament` (
 LOCK TABLES `Tournament` WRITE;
 /*!40000 ALTER TABLE `Tournament` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Tournament` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Venue`
---
-
-DROP TABLE IF EXISTS `Venue`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Venue` (
-  `Venue_ID` int(11) NOT NULL,
-  `Venue_Name` varchar(100) NOT NULL,
-  `Location` varchar(100) DEFAULT NULL,
-  `Capacity` int(11) DEFAULT NULL,
-  PRIMARY KEY (`Venue_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Venue`
---
-
-LOCK TABLES `Venue` WRITE;
-/*!40000 ALTER TABLE `Venue` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Venue` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -290,4 +323,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2024-10-16  9:23:20
+-- Dump completed on 2024-10-16 15:19:41
