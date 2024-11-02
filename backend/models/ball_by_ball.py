@@ -1,27 +1,39 @@
-from flask_sqlalchemy import SQLAlchemy
+# models/ball_by_ball.py
 
-# Create a SQLAlchemy instance
-db = SQLAlchemy()
+import mysql.connector
+from config import db_config
 
-class BallByBall(db.Model):
-    __tablename__ = 'ball_by_ball'
-    
-    # Composite primary key
-    overno = db.Column(db.Integer, primary_key=True)
-    bowlno = db.Column(db.Integer, primary_key=True)
-    run = db.Column(db.Integer)
-    wicket = db.Column(db.Integer)
-    on_strike = db.Column(db.Integer, db.ForeignKey('Player.Player_ID'))
-    other_end = db.Column(db.Integer, db.ForeignKey('Player.Player_ID'))
-    bowler = db.Column(db.Integer, db.ForeignKey('Player.Player_ID'))
-    match_id = db.Column(db.Integer, db.ForeignKey('Inning.Match_ID'))
-    inning_number = db.Column(db.Integer, db.ForeignKey('Inning.Inning_Number'))
+class BallByBall:
+    def __init__(self, over_no, bowl_no, run_taken=0, wicket=None, on_strike=None, other_end=None, bowler=None, match_id=None, inning_number=None):
+        self.over_no = over_no
+        self.bowl_no = bowl_no
+        self.run_taken = run_taken
+        self.wicket = wicket
+        self.on_strike = on_strike
+        self.other_end = other_end
+        self.bowler = bowler
+        self.match_id = match_id
+        self.inning_number = inning_number
 
-    # Optionally, define relationships
-    on_strike_player = db.relationship('Player', foreign_keys=[on_strike])
-    other_end_player = db.relationship('Player', foreign_keys=[other_end])
-    bowler_player = db.relationship('Player', foreign_keys=[bowler])
+    @staticmethod
+    def get_ball_by_ball_stats():
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM ball_by_ball')
+        ball_by_ball_data = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        return ball_by_ball_data
 
-    def __repr__(self):
-        return f'<BallByBall over={self.overno}, ball={self.bowlno}, runs={self.run}>'
-
+    @staticmethod
+    def add_ball_by_ball_stats(ball_by_ball):
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute('''
+            INSERT INTO ball_by_ball (over_no, bowl_no, run_taken, wicket, on_strike, other_end, bowler, Match_ID, Inning_Number)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (ball_by_ball.over_no, ball_by_ball.bowl_no, ball_by_ball.run_taken, ball_by_ball.wicket,
+              ball_by_ball.on_strike, ball_by_ball.other_end, ball_by_ball.bowler, ball_by_ball.match_id, ball_by_ball.inning_number))
+        connection.commit()
+        cursor.close()
+        connection.close()
