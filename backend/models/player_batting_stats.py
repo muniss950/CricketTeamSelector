@@ -43,18 +43,3 @@ class PlayerBattingStats:
 
         return cls(*result) if result else None
 
-    @classmethod
-    def add_stats(cls, stats):
-        connection = cls.get_db_connection()
-        cursor = connection.cursor()
-
-        cursor.execute('''
-            INSERT INTO Player_Batting_Stats (Player_ID, Player_Name, Matches_Played, Total_Runs, 
-            Total_Balls, Total_Fours, Total_Sixes, Average_Runs_Scored)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        ''', (stats.player_id, stats.player_name, stats.matches_played, stats.total_runs,
-              stats.total_balls, stats.total_fours, stats.total_sixes, stats.average_runs_scored))
-
-        connection.commit()
-        cursor.close()
-        connection.close()

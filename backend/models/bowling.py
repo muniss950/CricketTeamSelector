@@ -2,7 +2,7 @@
 
 class Bowling:
     def __init__(self, connection):
-        self.connection = connection
+        self.connection = get_db_connection()
 
     def get_bowling_stats(self):
         with self.connection.cursor(dictionary=True) as cursor:

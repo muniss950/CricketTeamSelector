@@ -1,14 +1,8 @@
-from flask import Flask, jsonify, request
 import mysql.connector
-from config import db_config  # Import database configuration from config.py
-
-app = Flask(__name__)
-
-# Function to get a database connection
+from config import db_config
 def get_db_connection():
     connection = mysql.connector.connect(**db_config)
     return connection
-
 class Player:
     def __init__(self, player_id=None, name=None, gender=None, role=None, team_id=None, dob=None):
         self.player_id = player_id
@@ -73,6 +67,29 @@ class Player:
             INSERT INTO Player (Player_Name, Gender, Role, Team_ID, DOB)
             VALUES (%s, %s, %s, %s, %s)
         ''', (self.name, self.gender, self.role, self.team_id, self.dob))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    def update_in_db(self):
+        """Update the player's information in the database."""
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute('''
+            UPDATE Player
+            SET Player_Name = %s, Gender = %s, Role = %s, Team_ID = %s, DOB = %s
+            WHERE Player_ID = %s
+        ''', (self.name, self.gender, self.role, self.team_id, self.dob, self.player_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    @classmethod
+    def delete_by_id(cls, player_id):
+        """Delete a specific player by ID from the database."""
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM Player WHERE Player_ID = %s', (player_id,))
         connection.commit()
         cursor.close()
         connection.close()

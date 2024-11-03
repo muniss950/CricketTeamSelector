@@ -1,4 +1,3 @@
-
 # models/team.py
 
 import mysql.connector

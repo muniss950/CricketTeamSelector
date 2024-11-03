@@ -18,7 +18,7 @@ from routes.teams_list_routes import teams_list_bp
 app = Flask(__name__)
 
 # Register blueprints for routes
-app.register_blueprint(player_bp, url_prefix='/players')
+app.register_blueprint(player_bp)
 app.register_blueprint(team_bp,url_prefix='/teams')
 app.register_blueprint(tournament_bp,url_prefix='/tournaments')
 app.register_blueprint(batting_stats_bp,url_prefix='/player_batting_stats')
