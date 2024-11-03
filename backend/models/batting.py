@@ -15,8 +15,9 @@ class Batting:
 
     @staticmethod
     def get_batting_stats():
+        """Fetch all batting stats from the Batting table."""
         connection = mysql.connector.connect(**db_config)
-        cursor = connection.cursor()
+        cursor = connection.cursor(dictionary=True)
         cursor.execute('SELECT * FROM Batting')
         batting_data = cursor.fetchall()
         cursor.close()
@@ -24,7 +25,19 @@ class Batting:
         return batting_data
 
     @staticmethod
+    def get_batting_stats_by_id(player_id, match_id):
+        """Fetch a specific batting entry by player and match ID."""
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM Batting WHERE Player_ID = %s AND Match_ID = %s', (player_id, match_id))
+        batting_data = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return batting_data
+
+    @staticmethod
     def add_batting_stats(batting):
+        """Add a new batting entry to the Batting table."""
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
         cursor.execute('''
@@ -32,6 +45,34 @@ class Batting:
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         ''', (batting.player_id, batting.match_id, batting.runs_scored, batting.balls_faced,
               batting.fours, batting.sixes, batting.position))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    @staticmethod
+    def update_batting_stats(player_id, match_id, runs_scored=None, balls_faced=None, fours=None, sixes=None, position=None):
+        """Update an existing batting entry in the Batting table."""
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute('''
+            UPDATE Batting
+            SET Runs_Scored = COALESCE(%s, Runs_Scored),
+                Balls_Faced = COALESCE(%s, Balls_Faced),
+                Fours = COALESCE(%s, Fours),
+                Sixes = COALESCE(%s, Sixes),
+                Position = COALESCE(%s, Position)
+            WHERE Player_ID = %s AND Match_ID = %s
+        ''', (runs_scored, balls_faced, fours, sixes, position, player_id, match_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    @staticmethod
+    def delete_batting_stats(player_id, match_id):
+        """Delete a specific batting entry by player and match ID."""
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM Batting WHERE Player_ID = %s AND Match_ID = %s', (player_id, match_id))
         connection.commit()
         cursor.close()
         connection.close()

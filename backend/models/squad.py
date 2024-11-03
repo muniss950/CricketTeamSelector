@@ -1,5 +1,4 @@
 # models/squad.py
-# models/squad.py
 from config import get_db_connection
 
 class Squad:

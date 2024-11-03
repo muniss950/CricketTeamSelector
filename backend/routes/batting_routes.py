@@ -1,21 +1,26 @@
 # routes/batting_routes.py
-
 from flask import Blueprint, jsonify, request
 from models.batting import Batting
 
-batting_bp = Blueprint('batting', __name__)
+batting_bp = Blueprint('batting_bp', __name__)
 
-@batting_bp.route('/', methods=['GET'])
-def get_batting():
-    """Route to retrieve all batting statistics."""
+@batting_bp.route('/batting', methods=['GET'])
+def get_all_batting_stats():
     batting_stats = Batting.get_batting_stats()
     return jsonify(batting_stats)
 
-@batting_bp.route('/', methods=['POST'])
-def add_batting():
-    """Route to add new batting statistics."""
-    data = request.json
-    new_batting = Batting(
+@batting_bp.route('/batting/<int:player_id>/<int:match_id>', methods=['GET'])
+def get_batting_stats_by_id(player_id, match_id):
+    batting_data = Batting.get_batting_stats_by_id(player_id, match_id)
+    if batting_data:
+        return jsonify(batting_data)
+    else:
+        return jsonify({"error": "Batting stats not found"}), 404
+
+@batting_bp.route('/batting', methods=['POST'])
+def add_batting_stats():
+    data = request.get_json()
+    batting = Batting(
         player_id=data['Player_ID'],
         match_id=data['Match_ID'],
         runs_scored=data.get('Runs_Scored', 0),
@@ -24,5 +29,23 @@ def add_batting():
         sixes=data.get('Sixes', 0),
         position=data.get('Position', -1)
     )
-    Batting.add_batting_stats(new_batting)
-    return jsonify({"message": "Batting stats added successfully!"}), 201
+    Batting.add_batting_stats(batting)
+    return jsonify({"message": "Batting stats added successfully"}), 201
+
+@batting_bp.route('/batting/<int:player_id>/<int:match_id>', methods=['PUT'])
+def update_batting_stats(player_id, match_id):
+    data = request.get_json()
+    Batting.update_batting_stats(
+        player_id, match_id,
+        runs_scored=data.get('Runs_Scored'),
+        balls_faced=data.get('Balls_Faced'),
+        fours=data.get('Fours'),
+        sixes=data.get('Sixes'),
+        position=data.get('Position')
+    )
+    return jsonify({"message": "Batting stats updated successfully"})
+
+@batting_bp.route('/batting/<int:player_id>/<int:match_id>', methods=['DELETE'])
+def delete_batting_stats(player_id, match_id):
+    Batting.delete_batting_stats(player_id, match_id)
+    return jsonify({"message": "Batting stats deleted successfully"})

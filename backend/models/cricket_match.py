@@ -1,5 +1,3 @@
-# models/cricket_match.py
-
 import mysql.connector
 from config import db_config
 
@@ -15,12 +13,22 @@ class CricketMatch:
     @staticmethod
     def get_all_matches():
         connection = mysql.connector.connect(**db_config)
-        cursor = connection.cursor()
+        cursor = connection.cursor(dictionary=True)
         cursor.execute('SELECT * FROM Cricket_Match')
         matches = cursor.fetchall()
         cursor.close()
         connection.close()
         return matches
+
+    @staticmethod
+    def get_match_by_id(match_id):
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM Cricket_Match WHERE Match_ID = %s', (match_id,))
+        match = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return match
 
     @staticmethod
     def add_match(match):
@@ -34,3 +42,42 @@ class CricketMatch:
         cursor.close()
         connection.close()
 
+    @staticmethod
+    def update_match(match_id, match_data):
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        query = '''
+            UPDATE Cricket_Match 
+            SET 
+                Match_Date = COALESCE(%s, Match_Date),
+                Tournament_ID = COALESCE(%s, Tournament_ID),
+                Team1_ID = COALESCE(%s, Team1_ID),
+                Team2_ID = COALESCE(%s, Team2_ID),
+                Winner = COALESCE(%s, Winner),
+                Stage = COALESCE(%s, Stage)
+            WHERE Match_ID = %s
+        '''
+        cursor.execute(
+            query,
+            (
+                match_data.get('Match_Date'),
+                match_data.get('Tournament_ID'),
+                match_data.get('Team1_ID'),
+                match_data.get('Team2_ID'),
+                match_data.get('Winner'),
+                match_data.get('Stage'),
+                match_id
+            )
+        )
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    @staticmethod
+    def delete_match(match_id):
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM Cricket_Match WHERE Match_ID = %s', (match_id,))
+        connection.commit()
+        cursor.close()
+        connection.close()
