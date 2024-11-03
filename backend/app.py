@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 app.register_blueprint(player_bp)
 app.register_blueprint(team_bp)
-app.register_blueprint(tournament_bp,url_prefix='/tournaments')
+app.register_blueprint(tournament_bp)
 app.register_blueprint(batting_stats_bp,url_prefix='/player_batting_stats')
 app.register_blueprint(batting_bp,url_prefix='/batting')
 app.register_blueprint(cricket_match_bp)
