@@ -13,16 +13,14 @@ from routes.player_bowling_stats_routes import player_bowling_bp
 from routes.squad_routes import squad_bp
 from routes.teams_list_routes import teams_list_bp
 
-# Import other model routes here when needed
 
 app = Flask(__name__)
 
-# Register blueprints for routes
 app.register_blueprint(player_bp)
-app.register_blueprint(team_bp,url_prefix='/teams')
-app.register_blueprint(tournament_bp,url_prefix='/tournaments')
+app.register_blueprint(team_bp)
+app.register_blueprint(tournament_bp)
 app.register_blueprint(batting_stats_bp,url_prefix='/player_batting_stats')
-app.register_blueprint(batting_bp,url_prefix='/batting')
+app.register_blueprint(batting_bp)
 app.register_blueprint(cricket_match_bp)
 app.register_blueprint(ball_by_ball_bp)
 app.register_blueprint(bowling_bp, url_prefix='/bowling')
@@ -30,7 +28,6 @@ app.register_blueprint(inning_bp)
 app.register_blueprint(player_bowling_bp)
 app.register_blueprint(squad_bp)
 app.register_blueprint(teams_list_bp)
-# Registering the batting routes
 
 if __name__ == '__main__':
     app.run(debug=True)

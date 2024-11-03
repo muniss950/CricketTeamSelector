@@ -1,14 +1,14 @@
 # routes/bowling_routes.py
 
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, jsonify, request
 from models.bowling import Bowling
 
 bowling_bp = Blueprint('bowling', __name__)
 
 bowling_model = Bowling
-def get_bowling_model():
-    connection = current_app.config['db_connection']()
-    return Bowling(connection)
+# def get_bowling_model():
+#     connection = current_app.config['db_connection']()
+#     return Bowling()
 
 @bowling_bp.route('/', methods=['GET'])
 def get_bowling():

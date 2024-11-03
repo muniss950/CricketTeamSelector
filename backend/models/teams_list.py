@@ -27,3 +27,43 @@ class TeamsList:
         cursor.close()
         connection.close()
 
+    @staticmethod
+    def get_team_entry(team_id, tournament_id):
+        """Fetch a specific team entry by team and tournament IDs."""
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT * FROM Teams_List WHERE Team_ID = %s AND Tournament_ID = %s"
+        cursor.execute(query, (team_id, tournament_id))
+        team_entry = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return team_entry
+
+    @staticmethod
+    def update_team_entry(team_id, tournament_id, new_team_id=None, new_tournament_id=None):
+        """Update an existing team entry in the Teams_List table."""
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        query = """
+            UPDATE Teams_List
+            SET Team_ID = COALESCE(%s, Team_ID),
+                Tournament_ID = COALESCE(%s, Tournament_ID)
+            WHERE Team_ID = %s AND Tournament_ID = %s
+        """
+        cursor.execute(query, (new_team_id, new_tournament_id, team_id, tournament_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    @staticmethod
+    def delete_team_entry(team_id, tournament_id):
+        """Delete a specific team entry by team and tournament IDs."""
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        query = "DELETE FROM Teams_List WHERE Team_ID = %s AND Tournament_ID = %s"
+        print("hi")
+        cursor.execute(query, (team_id, tournament_id))
+        print("lol")
+        connection.commit()
+        cursor.close()
+        connection.close()
