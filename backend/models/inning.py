@@ -18,6 +18,20 @@ class Inning:
         cursor.close()
         connection.close()
         return innings
+    @staticmethod
+    def get_inning_scorecard(match_id, inning_number):
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        query = """
+            SELECT Total_Score, Overs, Total_Wickets
+            FROM Inning
+            WHERE Match_ID = %s AND Inning_Number = %s
+        """
+        cursor.execute(query, (match_id, inning_number))
+        inning_data = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return inning_data
 
     @staticmethod
     def add_inning(match_id, inning_number, total_score, overs, total_wickets):
