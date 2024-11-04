@@ -32,14 +32,14 @@ def add_bowling():
     return jsonify({"message": "Bowling stats added successfully!"}), 201
 
 @bowling_bp.route('/<int:match_id>/<int:player_id>', methods=['PUT'])
-def update_bowling_stats(match_id, player_id):
+def update_bowling_stats(match_id, player_id,inning_number):
     """Route to update existing bowling statistics."""
     data = request.json
-    bowling_model.update_bowling_stats(match_id, player_id, data)
+    bowling_model.update_bowling_stats(match_id, player_id,inning_number,data)
     return jsonify({"message": "Bowling stats updated successfully!"}), 200
 
 @bowling_bp.route('/<int:match_id>/<int:player_id>', methods=['DELETE'])
-def delete_bowling_stats(match_id, player_id):
+def delete_bowling_stats(match_id, player_id,inning_number):
     """Route to delete bowling statistics for a specific player in a match."""
-    bowling_model.delete_bowling_stats(match_id, player_id)
+    bowling_model.delete_bowling_stats(match_id, player_id,inning_number)
     return jsonify({"message": "Bowling stats deleted successfully!"}), 204
