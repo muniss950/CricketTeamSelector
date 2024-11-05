@@ -3,7 +3,7 @@ from models.inning import Inning
 from models.batting import Batting
 from models.bowling import Bowling
 
-scorecard_bp = Blueprint('scorecard', __name__)
+scorecard_bp = Blueprint('scorecard_bp', __name__)
 
 @scorecard_bp.route('/scorecard', methods=['GET'])
 def get_scorecard():
@@ -26,7 +26,7 @@ def get_scorecard():
             "Bowling": bowling_data
         }
 
-        return jsonify(scorecard)
+        return jsonify(scorecard), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

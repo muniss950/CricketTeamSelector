@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify, request
 from models.bowling import Bowling
 
-bowling_bp = Blueprint('bowling', __name__)
+bowling_bp = Blueprint('bowling_bp', __name__)
 
 bowling_model = Bowling
 # def get_bowling_model():
