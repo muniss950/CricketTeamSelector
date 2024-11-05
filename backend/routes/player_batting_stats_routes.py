@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from models.player_batting_stats import PlayerBattingStats
 
-bp = Blueprint('player_batting_stats', __name__)
+bp = Blueprint('player_batting_stats_bp', __name__)
 
 @bp.route('/player_batting_stats', methods=['GET'])
 def get_all_batting_stats():

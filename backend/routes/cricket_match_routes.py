@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models.cricket_match import CricketMatch
 
-cricket_match_bp = Blueprint('cricket_match', __name__)
+cricket_match_bp = Blueprint('cricket_match_bp', __name__)
 
 @cricket_match_bp.route('/matches', methods=['GET'])
 def get_all_matches():

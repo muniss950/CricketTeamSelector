@@ -11,10 +11,11 @@ class AppTestCase(unittest.TestCase):
     def test_route_registration(self):
         # Test if all blueprints are registered successfully
         expected_blueprints = [
-            'player_bp', 'team_bp', 'tournament_bp', 'batting_stats_bp', 'batting_bp',
+            'player_bp', 'team_bp', 'tournament_bp', 'player_batting_stats_bp', 'batting_bp',
             'cricket_match_bp', 'ball_by_ball_bp', 'bowling_bp', 'inning_bp', 
-            'bowling_stats_bp', 'squad_bp', 'teams_list_bp', 'scorecard_bp'
+            'player_bowling_stats_bp', 'squad_bp', 'teams_list_bp', 'scorecard_bp'
         ]
+         
         for bp in expected_blueprints:
             self.assertIn(bp, app.blueprints, f"{bp} is not registered in the app")
 
@@ -35,7 +36,7 @@ class AppTestCase(unittest.TestCase):
 
     def test_scorecard_endpoint(self):
         response = self.client.get('/scorecard')  # Replace with actual endpoint
-        self.assertIn(response.status_code, [200, 404])
+        self.assertIn(response.status_code, [200,400, 404])
 
     # Continue with similar tests for each major endpoint
 

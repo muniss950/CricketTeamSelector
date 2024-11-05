@@ -2,7 +2,7 @@
 from flask import Blueprint, jsonify, request
 from models.player_bowling_stats import PlayerBowlingStats
 
-bowling_stats_bp = Blueprint('player_bowling_stats', __name__)
+bowling_stats_bp = Blueprint('player_bowling_stats_bp', __name__)
 
 @bowling_stats_bp.route('/player_bowling_stats', methods=['GET'])
 def get_player_bowling_stats():

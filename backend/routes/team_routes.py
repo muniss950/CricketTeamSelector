@@ -3,7 +3,7 @@ from models.team import Team
 
 team_bp = Blueprint('team_bp', __name__)
 
-@team_bp.route('/teams/', methods=['GET'])
+@team_bp.route('/teams', methods=['GET'])
 def get_all_teams():
     """Retrieve all teams."""
     try:

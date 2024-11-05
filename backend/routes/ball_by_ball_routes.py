@@ -3,7 +3,7 @@
 from flask import Blueprint, request, jsonify
 from models.ball_by_ball import BallByBall
 
-ball_by_ball_bp = Blueprint('ball_by_ball', __name__)
+ball_by_ball_bp = Blueprint('ball_by_ball_bp', __name__)
 
 @ball_by_ball_bp.route('/ball-by-ball', methods=['GET'])
 def get_ball_by_ball_stats():

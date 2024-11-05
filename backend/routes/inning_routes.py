@@ -3,7 +3,7 @@
 from flask import Blueprint, request, jsonify
 from models.inning import Inning
 
-inning_bp = Blueprint('inning', __name__)
+inning_bp = Blueprint('inning_bp', __name__)
 
 @inning_bp.route('/innings', methods=['GET'])
 def get_all_innings():
