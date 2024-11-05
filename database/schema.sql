@@ -17,6 +17,14 @@
 /*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
+-- Current Database: `cricket`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `cricket` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+
+USE `cricket`;
+
+--
 -- Table structure for table `Batting`
 --
 
@@ -31,8 +39,8 @@ CREATE TABLE `Batting` (
   `Fours` int(11) DEFAULT 0,
   `Sixes` int(11) DEFAULT 0,
   `Position` int(11) DEFAULT -1,
-  PRIMARY KEY (`Player_ID`,`Match_ID`),
-  KEY `Match_ID` (`Match_ID`),
+  `Inning_Number` int(11) NOT NULL,
+  PRIMARY KEY (`Match_ID`,`Player_ID`,`Inning_Number`),
   CONSTRAINT `Batting_ibfk_1` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`),
   CONSTRAINT `Batting_ibfk_2` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -44,6 +52,8 @@ CREATE TABLE `Batting` (
 
 LOCK TABLES `Batting` WRITE;
 /*!40000 ALTER TABLE `Batting` DISABLE KEYS */;
+INSERT INTO `Batting` VALUES
+(6,3,60,33,5,2,3,1);
 /*!40000 ALTER TABLE `Batting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -62,8 +72,8 @@ CREATE TABLE `Bowling` (
   `Runs_Conceded` int(11) DEFAULT 0,
   `Wickets_Taken` int(11) DEFAULT 0,
   `Maiden_Overs` int(11) DEFAULT 0,
-  PRIMARY KEY (`Player_ID`,`Match_ID`),
-  KEY `Match_ID` (`Match_ID`),
+  `Inning_Number` int(11) NOT NULL,
+  PRIMARY KEY (`Match_ID`,`Player_ID`,`Inning_Number`),
   CONSTRAINT `Bowling_ibfk_1` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`),
   CONSTRAINT `Bowling_ibfk_2` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -75,6 +85,8 @@ CREATE TABLE `Bowling` (
 
 LOCK TABLES `Bowling` WRITE;
 /*!40000 ALTER TABLE `Bowling` DISABLE KEYS */;
+INSERT INTO `Bowling` VALUES
+(5,3,4,24,30,2,5,1);
 /*!40000 ALTER TABLE `Bowling` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,7 +112,7 @@ CREATE TABLE `Cricket_Match` (
   CONSTRAINT `Cricket_Match_ibfk_1` FOREIGN KEY (`Team1_ID`) REFERENCES `Team` (`Team_ID`),
   CONSTRAINT `Cricket_Match_ibfk_2` FOREIGN KEY (`Team2_ID`) REFERENCES `Team` (`Team_ID`),
   CONSTRAINT `fkt` FOREIGN KEY (`Tournament_ID`) REFERENCES `Tournament` (`Tournament_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,6 +121,8 @@ CREATE TABLE `Cricket_Match` (
 
 LOCK TABLES `Cricket_Match` WRITE;
 /*!40000 ALTER TABLE `Cricket_Match` DISABLE KEYS */;
+INSERT INTO `Cricket_Match` VALUES
+(3,'2024-03-01',NULL,1,2,NULL,NULL);
 /*!40000 ALTER TABLE `Cricket_Match` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,6 +150,9 @@ CREATE TABLE `Inning` (
 
 LOCK TABLES `Inning` WRITE;
 /*!40000 ALTER TABLE `Inning` DISABLE KEYS */;
+INSERT INTO `Inning` VALUES
+(3,1,NULL,NULL,NULL),
+(3,2,45,14.2,3);
 /*!40000 ALTER TABLE `Inning` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,14 +166,14 @@ DROP TABLE IF EXISTS `Player`;
 CREATE TABLE `Player` (
   `Player_ID` int(11) NOT NULL AUTO_INCREMENT,
   `Player_Name` varchar(100) NOT NULL,
-  `Age` int(11) DEFAULT NULL,
   `Gender` enum('M','F','O') DEFAULT NULL,
   `Role` varchar(20) DEFAULT NULL,
   `Team_ID` int(11) DEFAULT NULL,
+  `DOB` date DEFAULT NULL,
   PRIMARY KEY (`Player_ID`),
   KEY `fkteam` (`Team_ID`),
   CONSTRAINT `fkteam` FOREIGN KEY (`Team_ID`) REFERENCES `Team` (`Team_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,6 +182,11 @@ CREATE TABLE `Player` (
 
 LOCK TABLES `Player` WRITE;
 /*!40000 ALTER TABLE `Player` DISABLE KEYS */;
+INSERT INTO `Player` VALUES
+(5,'dhoni',NULL,NULL,NULL,NULL),
+(6,'kohli',NULL,NULL,NULL,NULL),
+(8,'Sachin','M',NULL,NULL,NULL),
+(9,'Sachin','M',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `Player` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,6 +254,8 @@ CREATE TABLE `Squad` (
 
 LOCK TABLES `Squad` WRITE;
 /*!40000 ALTER TABLE `Squad` DISABLE KEYS */;
+INSERT INTO `Squad` VALUES
+(6,2,3);
 /*!40000 ALTER TABLE `Squad` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -250,7 +274,7 @@ CREATE TABLE `Team` (
   PRIMARY KEY (`Team_ID`),
   KEY `fkcaptain` (`Captain_ID`),
   CONSTRAINT `fkcaptain` FOREIGN KEY (`Captain_ID`) REFERENCES `Player` (`Player_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,6 +283,9 @@ CREATE TABLE `Team` (
 
 LOCK TABLES `Team` WRITE;
 /*!40000 ALTER TABLE `Team` DISABLE KEYS */;
+INSERT INTO `Team` VALUES
+(1,'Mumbai Indians',NULL,NULL),
+(2,'CSK',NULL,NULL);
 /*!40000 ALTER TABLE `Team` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -285,6 +312,8 @@ CREATE TABLE `Teams_List` (
 
 LOCK TABLES `Teams_List` WRITE;
 /*!40000 ALTER TABLE `Teams_List` DISABLE KEYS */;
+INSERT INTO `Teams_List` VALUES
+(2,1);
 /*!40000 ALTER TABLE `Teams_List` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,7 +332,7 @@ CREATE TABLE `Tournament` (
   `Start_Date` date DEFAULT NULL,
   `End_Date` date DEFAULT NULL,
   PRIMARY KEY (`Tournament_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,6 +341,8 @@ CREATE TABLE `Tournament` (
 
 LOCK TABLES `Tournament` WRITE;
 /*!40000 ALTER TABLE `Tournament` DISABLE KEYS */;
+INSERT INTO `Tournament` VALUES
+(1,'IPL',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `Tournament` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -351,97 +382,12 @@ LOCK TABLES `ball_by_ball` WRITE;
 /*!40000 ALTER TABLE `ball_by_ball` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ball_by_ball` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb3 */ ;
-/*!50003 SET character_set_results = utf8mb3 */ ;
-/*!50003 SET collation_connection  = utf8mb3_uca1400_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER after_ball_insert
-AFTER INSERT ON ball_by_ball
-FOR EACH ROW
-BEGIN
-    DECLARE total_runs INT;
-    DECLARE total_wickets INT;
 
-    
-    SELECT SUM(run_taken) INTO total_runs
-    FROM ball_by_ball
-    WHERE Match_ID = NEW.Match_ID AND Inning_Number = NEW.Inning_Number;
+--
+-- Current Database: `cricket`
+--
 
-    SELECT SUM(wicket) INTO total_wickets
-    FROM ball_by_ball
-    WHERE Match_ID = NEW.Match_ID AND Inning_Number = NEW.Inning_Number;
-
-    
-    UPDATE Inning
-    SET Total_Score = total_runs,
-        Total_Wickets = total_wickets,
-        Overs = FLOOR(COUNT(*) / 6) + (COUNT(*) % 6) / 6.0 
-    WHERE Match_ID = NEW.Match_ID AND Inning_Number = NEW.Inning_Number;
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb3 */ ;
-/*!50003 SET character_set_results = utf8mb3 */ ;
-/*!50003 SET collation_connection  = utf8mb3_uca1400_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER after_ball_insert_batting
-AFTER INSERT ON ball_by_ball
-FOR EACH ROW
-BEGIN
-    
-    UPDATE Batting
-    SET Runs_Scored = Runs_Scored + NEW.run_taken,
-        Balls_Faced = Balls_Faced + 1,
-        Fours = Fours + IF(NEW.run_taken = 4, 1, 0),
-        Sixes = Sixes + IF(NEW.run_taken = 6, 1, 0)
-    WHERE Match_ID = NEW.Match_ID
-      AND Player_ID = NEW.on_strike;
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb3 */ ;
-/*!50003 SET character_set_results = utf8mb3 */ ;
-/*!50003 SET collation_connection  = utf8mb3_uca1400_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER after_ball_insert_bowling
-AFTER INSERT ON ball_by_ball
-FOR EACH ROW
-BEGIN
-    
-    UPDATE Bowling
-    SET Overs_Bowled = Overs_Bowled + FLOOR(NEW.bowl_no / 6),
-        Balls_Bowled = Balls_Bowled + 1,
-        Runs_Conceded = Runs_Conceded + NEW.run_taken,
-        Wickets_Taken = Wickets_Taken + IF(NEW.wicket = 1, 1, 0)
-    WHERE Match_ID = NEW.Match_ID
-      AND Player_ID = NEW.bowler;
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
+USE `cricket`;
 
 --
 -- Final view structure for view `Player_Batting_Stats`
@@ -488,4 +434,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2024-10-16 16:51:24
+-- Dump completed on 2024-11-05 15:07:53
