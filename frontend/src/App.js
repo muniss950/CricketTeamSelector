@@ -1,39 +1,21 @@
 import React from 'react';
-import './App.css';
-import logo from './logo1.png'; // Import your logo
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './pages/Navbar'; // The navbar component with links
+import Home from './pages/Home';
+import Teams from './pages/Teams';
+import Players from './pages/Players'
+import Tournaments from './pages/Tournament'
 
-function App() {
-    return (
-        <div className="App">
-            <header className="App-header">
-                <div className="logo-container">
-                    <img src={logo} alt="CricFreak Logo" className="App-logo" />
-                    <h1>CRICFREAK</h1>
-                </div>
-                <nav className="App-navbar">
-                    <ul>
-                        <li><a href="#">Teams</a></li>
-                        <li><a href="#">Players</a></li>
-                        <li><a href="#">Matches</a></li>
-                        <li><a href="#">Tournaments</a></li>
-                    </ul>
-                </nav>
-                <div className="search-account">
-                    <input type="text" placeholder="Search..." className="search-bar" />
-                    <button className="login-button">Login</button>
-                </div>
-            </header>
-            <div className="App-body">
-                <main className="App-content">
-                    <h2>Welcome to Cricket Stats</h2>
-                    <p>Select a section from the navigation bar to view more details.</p>
-                </main>
-            </div>
-            <footer className="App-footer">
-                <p>&copy; 2024 Cricket Stats</p>
-            </footer>
-        </div>
-    );
-}
+const App = () => (
+  <Router>
+    <Navbar />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/teams" element={<Teams />} />
+      <Route path="/players" element={<Players />} />
+      <Route path="/tournaments" element={<Tournaments />} />
+    </Routes>
+  </Router>
+);
 
 export default App;

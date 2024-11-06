@@ -1,6 +1,8 @@
 # app.py
 from flask import Flask
+from flask_cors import CORS
 from routes.player_routes import player_bp
+
 from routes.team_routes import team_bp
 from routes.tournament_routes import tournament_bp 
 from routes.player_batting_stats_routes import bp as batting_stats_bp
@@ -16,7 +18,7 @@ from routes.scorecard_routes import scorecard_bp
 
 
 app = Flask(__name__)
-
+CORS(app)
 app.register_blueprint(player_bp)
 app.register_blueprint(team_bp)
 app.register_blueprint(tournament_bp)
