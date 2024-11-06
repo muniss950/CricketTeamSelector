@@ -1,0 +1,78 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+
+# Build output directories
+dist/
+build/
+
+# Cache directories
+.cache/
+.next/
+out/
+.tmp/
+.vscode/
+.idea/
+
+# Testing
+coverage/
+*.lcov
+
+# Configuration files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+.sass-cache/
+.npm/
+.parcel-cache/
+.pnp.cjs
+.pnp.loader.mjs
+
+# Editor and OS files
+*.swp
+*~
+.project
+*.sublime-project
+*.sublime-workspace
+
+# Yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Build artifacts
+public/static
+public/*.map
+
+# Firebase
+.firebase/
+firestore.indexes.json
+firestore.rules
+
+# IDE files
+.vscode/
+.idea/
+
+# Git
+.git/
+
