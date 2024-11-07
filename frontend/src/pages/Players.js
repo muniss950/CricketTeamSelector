@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getPlayers } from '../services/api'; // adjust the import path as needed
 import { Link } from 'react-router-dom';
 import logo from '../logo1.png'; // Import your logo
+import TableComponent from '../TableComponent.js'
 
 const Players = () => {
   const [players, setPlayers] = useState([]);
@@ -46,13 +47,7 @@ const Players = () => {
                     <button className="login-button">Login</button>
                 </div>
             </header>
-      <ul>
-        {players.map((player) => (
-          <li key={player.Player_ID}>
-            <strong>{player.Player_Name}</strong> (ID: {player.Player_ID})
-          </li>
-        ))}
-      </ul>
+      <TableComponent data={players} />
     </div>
   );
 };

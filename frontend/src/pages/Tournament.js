@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getTournaments } from '../services/api'; // adjust the import path as needed
 import { Link } from 'react-router-dom';
 import logo from '../logo1.png'; // Import your logo
+import TableComponent from '../TableComponent.js'
 
 const Tournaments = () => {
   const [tournaments, setTournaments] = useState([]);
@@ -46,13 +47,7 @@ const Tournaments = () => {
                     <button className="login-button">Login</button>
                 </div>
             </header>
-      <ul>
-        {tournaments.map((tournament) => (
-          <li key={tournament.Tournament_ID}>
-            <strong>{tournament.Tournament_Name}</strong> (ID: {tournament.Tournament_ID})
-          </li>
-        ))}
-      </ul>
+      <TableComponent data={tournaments} />
     </div>
   );
 };

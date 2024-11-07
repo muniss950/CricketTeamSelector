@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getMatches } from '../services/api'; // adjust the import path as needed
 import { Link } from 'react-router-dom';
 import logo from '../logo1.png'; // Import your logo
-
+import TableComponent from '../TableComponent.js'
 const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [error, setError] = useState(null);
@@ -46,13 +46,7 @@ const Matches = () => {
                     <button className="login-button">Login</button>
                 </div>
             </header>
-      <ul>
-        {matches.map((match) => (
-          <li key={match.Match_ID}>
-            <strong>{match.Match_Date}</strong> (ID: {match.Match_ID})
-          </li>
-        ))}
-      </ul>
+      <TableComponent data={matches} />
     </div>
   );
 };
