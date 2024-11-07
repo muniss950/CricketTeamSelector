@@ -1,6 +1,6 @@
 // Teams.js
 import React, { useEffect, useState } from 'react';
-import { getTeams } from '../api'; // adjust the import path as needed
+import { getTeams } from '../services/api'; // adjust the import path as needed
 import { Link } from 'react-router-dom';
 import logo from '../logo1.png'; // Import your logo
 import TableComponent from '../TableComponent.js'
