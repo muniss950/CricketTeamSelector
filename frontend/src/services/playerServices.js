@@ -1,10 +1,10 @@
-i// teamService.js
+// playerService.js
 
-const API_URL = 'http://localhost:5000/teams'; // Update with your actual API URL if different
+const API_URL = 'http://localhost:5000/players'; // Update with your actual API URL if different
 
-const teamService = {
-  // Fetch all teams
-  async getAllTeams() {
+const playerService = {
+  // Fetch all players
+  async getPlayers() {
     try {
       const response = await fetch(API_URL, {
         method: 'GET',
@@ -12,11 +12,9 @@ const teamService = {
           'Content-Type': 'application/json',
         },
       });
-
       if (!response.ok) {
-        throw new Error('Failed to fetch teams');
+        throw new Error('Failed to fetch players');
       }
-
       return await response.json();
     } catch (error) {
       console.error(error);
@@ -24,20 +22,18 @@ const teamService = {
     }
   },
 
-  // Fetch a team by its ID
-  async getTeamById(teamId) {
+  // Fetch a single player by ID
+  async getPlayer(playerId) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${playerId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
       if (!response.ok) {
-        throw new Error('Team not found');
+        throw new Error('Player not found');
       }
-
       return await response.json();
     } catch (error) {
       console.error(error);
@@ -45,25 +41,19 @@ const teamService = {
     }
   },
 
-  // Add a new team
-  async addTeam(teamName, teamType, captainId) {
+  // Create a new player
+  async createPlayer(playerData) {
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          Team_Name: teamName,
-          Team_Type: teamType,
-          Captain_ID: captainId,
-        }),
+        body: JSON.stringify(playerData),
       });
-
       if (!response.ok) {
-        throw new Error('Failed to add team');
+        throw new Error('Failed to create player');
       }
-
       return await response.json();
     } catch (error) {
       console.error(error);
@@ -71,25 +61,19 @@ const teamService = {
     }
   },
 
-  // Update an existing team
-  async updateTeam(teamId, teamName, teamType, captainId) {
+  // Update an existing player by ID
+  async updatePlayer(playerId, playerData) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${playerId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          Team_Name: teamName,
-          Team_Type: teamType,
-          Captain_ID: captainId,
-        }),
+        body: JSON.stringify(playerData),
       });
-
       if (!response.ok) {
-        throw new Error('Failed to update team');
+        throw new Error('Failed to update player');
       }
-
       return await response.json();
     } catch (error) {
       console.error(error);
@@ -97,20 +81,18 @@ const teamService = {
     }
   },
 
-  // Delete a team by its ID
-  async deleteTeam(teamId) {
+  // Delete a player by ID
+  async deletePlayer(playerId) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${playerId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
       if (!response.ok) {
-        throw new Error('Failed to delete team');
+        throw new Error('Failed to delete player');
       }
-
       return await response.json();
     } catch (error) {
       console.error(error);
@@ -119,6 +101,5 @@ const teamService = {
   },
 };
 
-// Export the teamService object
-export const TeamService = teamService;
-
+// Export the playerService object
+export const PlayerService = playerService;

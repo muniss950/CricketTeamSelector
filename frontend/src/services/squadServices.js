@@ -1,10 +1,10 @@
-i// teamService.js
+// squadService.js
 
-const API_URL = 'http://localhost:5000/teams'; // Update with your actual API URL if different
+const API_URL = 'http://localhost:5000/squad'; // Update with your actual API URL if different
 
-const teamService = {
-  // Fetch all teams
-  async getAllTeams() {
+const squadService = {
+  // Fetch all squad entries
+  async getAllSquadEntries() {
     try {
       const response = await fetch(API_URL, {
         method: 'GET',
@@ -14,7 +14,7 @@ const teamService = {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch teams');
+        throw new Error('Failed to fetch squad entries');
       }
 
       return await response.json();
@@ -24,10 +24,10 @@ const teamService = {
     }
   },
 
-  // Fetch a team by its ID
-  async getTeamById(teamId) {
+  // Fetch a specific squad entry by player_id, team_id, and match_id
+  async getSquadEntry(playerId, teamId, matchId) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${playerId}/${teamId}/${matchId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ const teamService = {
       });
 
       if (!response.ok) {
-        throw new Error('Team not found');
+        throw new Error('Squad entry not found');
       }
 
       return await response.json();
@@ -45,8 +45,8 @@ const teamService = {
     }
   },
 
-  // Add a new team
-  async addTeam(teamName, teamType, captainId) {
+  // Add a new squad entry
+  async addSquadEntry(playerId, teamId, matchId) {
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -54,14 +54,14 @@ const teamService = {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          Team_Name: teamName,
-          Team_Type: teamType,
-          Captain_ID: captainId,
+          Player_ID: playerId,
+          Team_ID: teamId,
+          Match_ID: matchId,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add team');
+        throw new Error('Failed to add squad entry');
       }
 
       return await response.json();
@@ -71,23 +71,23 @@ const teamService = {
     }
   },
 
-  // Update an existing team
-  async updateTeam(teamId, teamName, teamType, captainId) {
+  // Update an existing squad entry
+  async updateSquadEntry(playerId, teamId, matchId, newPlayerId, newTeamId, newMatchId) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${playerId}/${teamId}/${matchId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          Team_Name: teamName,
-          Team_Type: teamType,
-          Captain_ID: captainId,
+          Player_ID: newPlayerId,
+          Team_ID: newTeamId,
+          Match_ID: newMatchId,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update team');
+        throw new Error('Failed to update squad entry');
       }
 
       return await response.json();
@@ -97,10 +97,10 @@ const teamService = {
     }
   },
 
-  // Delete a team by its ID
-  async deleteTeam(teamId) {
+  // Delete a squad entry
+  async deleteSquadEntry(playerId, teamId, matchId) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${playerId}/${teamId}/${matchId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ const teamService = {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete team');
+        throw new Error('Failed to delete squad entry');
       }
 
       return await response.json();
@@ -119,6 +119,5 @@ const teamService = {
   },
 };
 
-// Export the teamService object
-export const TeamService = teamService;
-
+// Export the squadService object
+export const SquadService = squadService;

@@ -1,10 +1,10 @@
-i// teamService.js
+// tournamentsService.js
 
-const API_URL = 'http://localhost:5000/teams'; // Update with your actual API URL if different
+const API_URL = 'http://localhost:5000/tournaments'; // Update with your actual API URL if different
 
-const teamService = {
-  // Fetch all teams
-  async getAllTeams() {
+const tournamentsService = {
+  // Fetch all tournaments
+  async getAllTournaments() {
     try {
       const response = await fetch(API_URL, {
         method: 'GET',
@@ -14,7 +14,7 @@ const teamService = {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch teams');
+        throw new Error('Failed to fetch tournaments');
       }
 
       return await response.json();
@@ -24,10 +24,10 @@ const teamService = {
     }
   },
 
-  // Fetch a team by its ID
-  async getTeamById(teamId) {
+  // Fetch a tournament by tournament_id
+  async getTournament(tournamentId) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${tournamentId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ const teamService = {
       });
 
       if (!response.ok) {
-        throw new Error('Team not found');
+        throw new Error('Tournament not found');
       }
 
       return await response.json();
@@ -45,23 +45,19 @@ const teamService = {
     }
   },
 
-  // Add a new team
-  async addTeam(teamName, teamType, captainId) {
+  // Create a new tournament
+  async createTournament(tournamentData) {
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          Team_Name: teamName,
-          Team_Type: teamType,
-          Captain_ID: captainId,
-        }),
+        body: JSON.stringify(tournamentData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add team');
+        throw new Error('Failed to create tournament');
       }
 
       return await response.json();
@@ -71,23 +67,19 @@ const teamService = {
     }
   },
 
-  // Update an existing team
-  async updateTeam(teamId, teamName, teamType, captainId) {
+  // Update a tournament
+  async updateTournament(tournamentId, tournamentData) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${tournamentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          Team_Name: teamName,
-          Team_Type: teamType,
-          Captain_ID: captainId,
-        }),
+        body: JSON.stringify(tournamentData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update team');
+        throw new Error('Failed to update tournament');
       }
 
       return await response.json();
@@ -97,10 +89,10 @@ const teamService = {
     }
   },
 
-  // Delete a team by its ID
-  async deleteTeam(teamId) {
+  // Delete a tournament
+  async deleteTournament(tournamentId) {
     try {
-      const response = await fetch(`${API_URL}/${teamId}`, {
+      const response = await fetch(`${API_URL}/${tournamentId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +100,7 @@ const teamService = {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete team');
+        throw new Error('Failed to delete tournament');
       }
 
       return await response.json();
@@ -119,6 +111,5 @@ const teamService = {
   },
 };
 
-// Export the teamService object
-export const TeamService = teamService;
-
+// Export the tournamentsService object
+export const TournamentsService = tournamentsService;
