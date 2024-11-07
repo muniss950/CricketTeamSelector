@@ -5,7 +5,6 @@ import Home from './pages/Home';
 import Teams from './pages/Teams';
 import Players from './pages/Players'
 import Tournaments from './pages/Tournament'
-import Matches from './pages/Matches';
 
 const App = () => (
   <Router>
@@ -15,7 +14,6 @@ const App = () => (
       <Route path="/teams" element={<Teams />} />
       <Route path="/players" element={<Players />} />
       <Route path="/tournaments" element={<Tournaments />} />
-      <Route path="/matches" element={<Matches />} />
     </Routes>
   </Router>
 );
