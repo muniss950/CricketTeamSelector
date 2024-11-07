@@ -52,9 +52,17 @@ class Player:
         """Retrieve a specific player by ID from the database."""
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute('SELECT * FROM Player WHERE Player_ID = %s', (player_id,))
-        row = cursor.fetchone()
+        # cursor.execute('SELECT * FROM Player WHERE Player_ID = %s', (player_id,))
+
+        print(player_id)
+        
+        cursor.execute('CALL GetPlayerByID(%s)',(player_id,))
+        result = cursor.fetchone()
+        row=result
+        print(row)
         cursor.close()
+        # connection.commit()
+
         connection.close()
         
         return cls.from_db_row(row).to_dict() if row else None
@@ -63,10 +71,11 @@ class Player:
         """Insert the player into the database."""
         connection = get_db_connection()
         cursor = connection.cursor()
+        
+            # INSERT INTO Player (Player_Name, Gender, Role, Team_ID, DOB)
         cursor.execute('''
-            INSERT INTO Player (Player_Name, Gender, Role, Team_ID, DOB)
-            VALUES (%s, %s, %s, %s, %s)
-        ''', (self.name, self.gender, self.role, self.team_id, self.dob))
+            CALL InsertPlayer(%s, %s, %s, %s, %s)
+        ''', (self.name , self.gender, self.role, self.team_id, self.dob))
         connection.commit()
         cursor.close()
         connection.close()
