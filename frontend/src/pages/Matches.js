@@ -1,25 +1,25 @@
 // Teams.js
 import React, { useEffect, useState } from 'react';
-import { getPlayers } from '../services/api'; // adjust the import path as needed
+import { getMatches } from '../services/api'; // adjust the import path as needed
 import { Link } from 'react-router-dom';
 import logo from '../logo1.png'; // Import your logo
 
-const Players = () => {
-  const [players, setPlayers] = useState([]);
+const Matches = () => {
+  const [matches, setMatches] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPlayers = async () => {
+    const fetchMatches = async () => {
       try {
-        const response = await getPlayers();
+        const response = await getMatches();
         // console.log(response)
-        setPlayers(response.data); // Assuming `response.data` contains the teams array
+        setMatches(response.data); // Assuming `response.data` contains the teams array
       } catch (err) {
         setError('Failed to fetch teams');
       }
     };
 
-    fetchPlayers();
+    fetchMatches();
   }, []);
 
   if (error) {
@@ -47,9 +47,9 @@ const Players = () => {
                 </div>
             </header>
       <ul>
-        {players.map((player) => (
-          <li key={player.Player_ID}>
-            <strong>{player.Player_Name}</strong> (ID: {player.Player_ID})
+        {matches.map((match) => (
+          <li key={match.Match_ID}>
+            <strong>{match.Match_Date}</strong> (ID: {match.Match_ID})
           </li>
         ))}
       </ul>
@@ -57,7 +57,8 @@ const Players = () => {
   );
 };
 
-export default Players;
+export default Matches;
+
 
 
 
