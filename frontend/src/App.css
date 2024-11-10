@@ -178,3 +178,8 @@ h1 {
 .styled-table tr:hover {
   cursor: pointer;
 }
+
+body {
+  background-image: url('cricketbg.jpg');
+  background-size: cover;
+}
