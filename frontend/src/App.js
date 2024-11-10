@@ -8,6 +8,7 @@ import Tournaments from './pages/Tournament'
 import Matches from './pages/Match';
 import Batting from './pages/batting';
 
+
 const App = () => (
   <Router>
     <Navbar />

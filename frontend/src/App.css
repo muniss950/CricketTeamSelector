@@ -174,3 +174,7 @@ h1 {
 .styled-table tbody tr:hover {
   background-color: #f1f9ff;
 }
+
+.styled-table tr:hover {
+  cursor: pointer;
+}
