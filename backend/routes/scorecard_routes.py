@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from models.inning import Inning
 from models.batting import Batting
 from models.bowling import Bowling
+from models.cricket_match import CricketMatch 
 
 scorecard_bp = Blueprint('scorecard_bp', __name__)
 
@@ -15,6 +16,7 @@ def get_scorecard():
         return jsonify({"error": "Please provide match_id and inning_number"}), 400
 
     try:
+        match_data=CricketMatch.get_match_by_id(match_id)
         # Fetch scorecard data from each model
         inning_data = Inning.get_inning_scorecard(match_id, inning_number)
         batting_data = Batting.get_batting_scorecard(match_id, inning_number)

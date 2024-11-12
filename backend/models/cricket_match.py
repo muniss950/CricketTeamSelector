@@ -14,7 +14,24 @@ class CricketMatch:
     def get_all_matches():
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM Cricket_Match')
+        query = '''
+            SELECT 
+                cm.Match_ID,
+                cm.Match_Date,
+                cm.Tournament_ID,
+                cm.Team1_ID,
+                cm.Team2_ID,
+                cm.Winner,
+                cm.Stage,
+                t1.Team_Name AS Team1_Name,
+                t2.Team_Name AS Team2_Name,
+                w.Team_Name AS Winner_Name
+            FROM Cricket_Match cm
+            LEFT JOIN Team t1 ON cm.Team1_ID = t1.Team_ID
+            LEFT JOIN Team t2 ON cm.Team2_ID = t2.Team_ID
+            LEFT JOIN Team w ON cm.Winner = w.Team_ID
+        '''
+        cursor.execute(query)
         matches = cursor.fetchall()
         cursor.close()
         connection.close()
@@ -24,7 +41,25 @@ class CricketMatch:
     def get_match_by_id(match_id):
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM Cricket_Match WHERE Match_ID = %s', (match_id,))
+        query = '''
+            SELECT 
+                cm.Match_ID,
+                cm.Match_Date,
+                cm.Tournament_ID,
+                cm.Team1_ID,
+                cm.Team2_ID,
+                cm.Winner,
+                cm.Stage,
+                t1.Team_Name AS Team1_Name,
+                t2.Team_Name AS Team2_Name,
+                w.Team_Name AS Winner_Name
+            FROM Cricket_Match cm
+            LEFT JOIN Team t1 ON cm.Team1_ID = t1.Team_ID
+            LEFT JOIN Team t2 ON cm.Team2_ID = t2.Team_ID
+            LEFT JOIN Team w ON cm.Winner = w.Team_ID
+            WHERE cm.Match_ID = %s
+        '''
+        cursor.execute(query, (match_id,))
         match = cursor.fetchone()
         cursor.close()
         connection.close()
