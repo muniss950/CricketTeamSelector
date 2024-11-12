@@ -7,7 +7,7 @@ import Players from './pages/Players';
 import Tournaments from './pages/Tournament';
 import Matches from './pages/Match';
 import Batting from './pages/batting';
-import Scorecard from './pages/scorecard'; // Import Scorecard page
+import Scorecard from './pages/Scorecard'; // Import Scorecard page
 import LoginPage from './pages/Login.js'
 
 const App = () => (
