@@ -10,6 +10,7 @@ import Batting from './pages/batting';
 import Scorecard from './pages/Scorecard'; // Import Scorecard page
 import LoginPage from './pages/Login.js'
 import PlayerPage from './admin/PlayerAdmin';
+import MatchPage from './admin/MatchAdmin';
 
 const App = () => (
   <Router>
@@ -25,6 +26,7 @@ const App = () => (
       {/* Route for scorecard page with query parameters */}
       <Route path="/scorecard/:matchId" element={<Scorecard  />} />
       <Route path="/admin/players" element={<PlayerPage />} />
+      <Route path="/admin/matches" element={<MatchPage />} />
     </Routes>
   </Router>
 );
