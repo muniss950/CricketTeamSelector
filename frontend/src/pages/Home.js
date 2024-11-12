@@ -21,7 +21,9 @@ function Home() {
                 </nav>
                 <div className="search-account">
                     <input type="text" placeholder="Search..." className="search-bar" />
-                    <button className="login-button">Login</button>
+                    <button  className="login-button"><Link to="/login">
+                  Login</Link></button>
+
                 </div>
             </header>
             <div className="App-body">

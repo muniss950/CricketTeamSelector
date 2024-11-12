@@ -7,6 +7,7 @@ import Players from './pages/Players'
 import Tournaments from './pages/Tournament'
 import Matches from './pages/Match';
 import Batting from './pages/batting';
+import LoginPage from './pages/Login.js'
 
 
 const App = () => (
@@ -18,6 +19,7 @@ const App = () => (
       <Route path="/players" element={<Players />} />
       <Route path="/tournaments" element={<Tournaments />} />
       <Route path="/matches" element={<Matches />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/batting/:playerId" element={<Batting />} />
     </Routes>
   </Router>

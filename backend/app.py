@@ -61,6 +61,7 @@ from routes.player_bowling_stats_routes import bowling_stats_bp
 from routes.squad_routes import squad_bp
 from routes.teams_list_routes import teams_list_bp
 from routes.scorecard_routes import scorecard_bp
+from routes.user_routes import user_bp
 
 # Register all blueprints with the app
 app.register_blueprint(player_bp)
@@ -76,6 +77,7 @@ app.register_blueprint(bowling_stats_bp)
 app.register_blueprint(squad_bp)
 app.register_blueprint(teams_list_bp)
 app.register_blueprint(scorecard_bp)
+app.register_blueprint(user_bp)
 
 @app.route('/')
 def home():
