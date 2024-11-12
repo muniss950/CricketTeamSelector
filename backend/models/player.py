@@ -98,7 +98,9 @@ class Player:
         """Delete a specific player by ID from the database."""
         connection = get_db_connection()
         cursor = connection.cursor()
+        print("test before exec")
         cursor.execute('DELETE FROM Player WHERE Player_ID = %s', (player_id,))
+        print("test after exec")
         connection.commit()
         cursor.close()
         connection.close()

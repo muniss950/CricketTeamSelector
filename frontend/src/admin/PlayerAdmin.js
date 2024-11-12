@@ -60,7 +60,8 @@ const PlayerPage = () => {
     }
 
     try {
-      const updatedPlayer = await PlayerService.updatePlayer(editingPlayer.id, editingPlayer);
+      console.log("update",editingPlayer)
+      const updatedPlayer = await PlayerService.updatePlayer(editingPlayer.Player_ID, editingPlayer);
       const updatedPlayers = players.map(player =>
         player.id === updatedPlayer.id ? updatedPlayer : player
       );
