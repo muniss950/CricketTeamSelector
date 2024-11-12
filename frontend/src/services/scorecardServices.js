@@ -11,7 +11,7 @@ const scorecardService = {
       const response =await axios.get(`${API_URL}?match_id=${matchId}&inning_number=${inningNumber}`)
 
       // console.log(response.data)
-      return response;
+      return response.data;
     } catch (error) {
       console.error(error);
       throw error;
