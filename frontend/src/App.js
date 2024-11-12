@@ -18,6 +18,7 @@ const App = () => (
       <Route path="/players" element={<Players />} />
       <Route path="/tournaments" element={<Tournaments />} />
       <Route path="/matches" element={<Matches />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/batting/:playerId" element={<Batting />} />
       {/* Route for scorecard page with query parameters */}
       <Route path="/scorecard" element={<Scorecard />} />
