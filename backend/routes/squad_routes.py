@@ -23,6 +23,13 @@ def get_squad_entry(player_id, team_id, match_id):
     else:
         return jsonify({"error": "Squad entry not found"}), 404
 
+@squad_bp.route('/squad/<int:match_id>/<int:team_id>', methods=['GET'])
+def get_squad_for_match(team_id, match_id):
+    squad_entry = Squad.get_squad_by_team_for_match(team_id, match_id)
+    if squad_entry:
+        return jsonify(squad_entry)
+    else:
+        return jsonify({"error": "Squad entry not found"}), 404
 @squad_bp.route('/squad/<int:player_id>/<int:team_id>/<int:match_id>', methods=['PUT'])
 def update_squad_entry(player_id, team_id, match_id):
     data = request.get_json()
