@@ -12,6 +12,7 @@ import LoginPage from './pages/Login.js'
 import PlayerPage from './admin/PlayerAdmin';
 import MatchPage from './admin/MatchAdmin';
 import TeamsPage from './admin/TeamAdmin'; 
+import SquadPage from './admin/SquadAdmin';
 
 const App = () => (
   <Router>
@@ -29,6 +30,7 @@ const App = () => (
       <Route path="/admin/players" element={<PlayerPage />} />
       <Route path="/admin/matches" element={<MatchPage />} />
       <Route path="/admin/teams" element={<TeamsPage />} />
+      <Route path="/admin/squad" element={<SquadPage />} />
     </Routes>
   </Router>
 );
