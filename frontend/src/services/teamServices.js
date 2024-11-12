@@ -1,4 +1,4 @@
-i// teamService.js
+// i// teamService.js
 
 const API_URL = 'http://localhost:5000/teams'; // Update with your actual API URL if different
 

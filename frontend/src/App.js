@@ -11,6 +11,7 @@ import Scorecard from './pages/Scorecard'; // Import Scorecard page
 import LoginPage from './pages/Login.js'
 import PlayerPage from './admin/PlayerAdmin';
 import MatchPage from './admin/MatchAdmin';
+import TeamsPage from './admin/TeamAdmin'; 
 
 const App = () => (
   <Router>
@@ -27,6 +28,7 @@ const App = () => (
       <Route path="/scorecard/:matchId" element={<Scorecard  />} />
       <Route path="/admin/players" element={<PlayerPage />} />
       <Route path="/admin/matches" element={<MatchPage />} />
+      <Route path="/admin/teams" element={<TeamsPage />} />
     </Routes>
   </Router>
 );
