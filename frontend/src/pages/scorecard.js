@@ -1,68 +1,81 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { ScorecardService } from '../services/scorecardServices.js'; // Assuming the service is in the same folder
-import TableComponent from '../TableComponent'; // Importing the TableComponent
+import { useParams } from 'react-router-dom';
+import { ScorecardService } from '../services/scorecardServices';
+import TableComponent from '../TableComponent';
 
-const Scorecard = () => {
-  const [scorecard, setScorecard] = useState(null);
+const ScorecardPage = () => {
+  const { matchId } = useParams(); // Extracting matchId from URL
+  const [inning1Data, setInning1Data] = useState({
+    inningInfo: [],
+    batting: [],
+    bowling: [],
+  });
+  const [inning2Data, setInning2Data] = useState({
+    inningInfo: [],
+    batting: [],
+    bowling: [],
+  });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const matchId = queryParams.get('match_id');
-  const inningNumber = queryParams.get('inning_number');
-  console.log(queryParams)
-  useEffect(() => {
-    if (matchId && inningNumber) {
-      ScorecardService.getScorecard(matchId, inningNumber)
-        .then((data) => {
-          setScorecard(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading(false);
-        });
-    }
-  }, [matchId, inningNumber]);
 
+  // Fetch data for both innings
+  useEffect(() => {
+    const fetchInningsData = async () => {
+      try {
+        // Fetching inning 1 data
+        const inning1Scorecard = await ScorecardService.getScorecard(matchId, 1);
+        const d1=inning1Scorecard
+        console.log("inning1 ",d1)
+        setInning1Data({
+          inningInfo: d1.data.Inning,
+          batting: d1.data.Batting,
+          bowling: d1.data.Bowling,
+        });
+
+        // Fetching inning 2 data
+        const inning2Scorecard = await ScorecardService.getScorecard(matchId, 2);
+        setInning2Data({
+          inningInfo: inning2Scorecard.Inning,
+          batting: inning2Scorecard.Batting,
+          bowling: inning2Scorecard.Bowling,
+        });
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching scorecard data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchInningsData();
+  }, [matchId]);
+
+  // If loading, display loading message
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  // Scorecard data might have different sections, e.g., Innings, Batting, Bowling
+  console.log(inning1Data)
   return (
     <div>
-      <h2>Scorecard for Match {matchId} - Inning {inningNumber}</h2>
-      {scorecard && (
-        <div>
-          {/* Render different sections of the scorecard using TableComponent */}
-          {scorecard.Inning && (
-            <div>
-              <h3>Inning</h3>
-              <TableComponent data={scorecard.Inning} />
-            </div>
-          )}
-          {scorecard.Batting && (
-            <div>
-              <h3>Batting</h3>
-              <TableComponent data={scorecard.Batting} />
-            </div>
-          )}
-          {scorecard.Bowling && (
-            <div>
-              <h3>Bowling</h3>
-              <TableComponent data={scorecard.Bowling} />
-            </div>
-          )}
-        </div>
-      )}
+      <h2>Scorecard for Match {matchId}</h2>
+
+      {/* Inning 1 Tables */}
+      <h3>Inning 1 Information</h3>
+      <TableComponent data={inning1Data.inningInfo} />
+      <h3>Inning 1 Batting Score</h3>
+      <TableComponent data={inning1Data.batting} />
+      <h3>Inning 1 Bowling Score</h3>
+      <TableComponent data={inning1Data.bowling} />
+
+      {/* Inning 2 Tables */}
+      <h3>Inning 2 Information</h3>
+      <TableComponent data={inning2Data.inningInfo} />
+      <h3>Inning 2 Batting Score</h3>
+      <TableComponent data={inning2Data.batting} />
+      <h3>Inning 2 Bowling Score</h3>
+      <TableComponent data={inning2Data.bowling} />
     </div>
   );
 };
 
-export default Scorecard;
+export default ScorecardPage;

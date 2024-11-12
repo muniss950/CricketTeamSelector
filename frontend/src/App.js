@@ -8,6 +8,7 @@ import Tournaments from './pages/Tournament';
 import Matches from './pages/Match';
 import Batting from './pages/batting';
 import Scorecard from './pages/scorecard'; // Import Scorecard page
+import LoginPage from './pages/Login.js'
 
 const App = () => (
   <Router>
@@ -21,7 +22,7 @@ const App = () => (
       <Route path="/login" element={<LoginPage />} />
       <Route path="/batting/:playerId" element={<Batting />} />
       {/* Route for scorecard page with query parameters */}
-      <Route path="/scorecard" element={<Scorecard />} />
+      <Route path="/scorecard/:matchId" element={<Scorecard  />} />
     </Routes>
   </Router>
 );
