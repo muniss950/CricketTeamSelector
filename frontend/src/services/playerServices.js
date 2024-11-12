@@ -1,4 +1,5 @@
 // playerService.js
+import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/players'; // Update with your actual API URL if different
 
@@ -6,18 +7,14 @@ const playerService = {
   // Fetch all players
   async getPlayers() {
     try {
-      const response = await fetch(API_URL, {
-        method: 'GET',
+      const response = await axios.get(API_URL, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      if (!response.ok) {
-        throw new Error('Failed to fetch players');
-      }
-      return await response.json();
+      return response.data;  // Axios automatically parses the JSON response
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching players:', error);
       throw error;
     }
   },
@@ -25,18 +22,14 @@ const playerService = {
   // Fetch a single player by ID
   async getPlayer(playerId) {
     try {
-      const response = await fetch(`${API_URL}/${playerId}`, {
-        method: 'GET',
+      const response = await axios.get(`${API_URL}/${playerId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      if (!response.ok) {
-        throw new Error('Player not found');
-      }
-      return await response.json();
+      return response.data;
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching player:', error);
       throw error;
     }
   },
@@ -44,19 +37,14 @@ const playerService = {
   // Create a new player
   async createPlayer(playerData) {
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
+      const response = await axios.post(API_URL, playerData, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(playerData),
       });
-      if (!response.ok) {
-        throw new Error('Failed to create player');
-      }
-      return await response.json();
+      return response.data;
     } catch (error) {
-      console.error(error);
+      console.error('Error creating player:', error);
       throw error;
     }
   },
@@ -64,19 +52,14 @@ const playerService = {
   // Update an existing player by ID
   async updatePlayer(playerId, playerData) {
     try {
-      const response = await fetch(`${API_URL}/${playerId}`, {
-        method: 'PUT',
+      const response = await axios.put(`${API_URL}/${playerId}`, playerData, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(playerData),
       });
-      if (!response.ok) {
-        throw new Error('Failed to update player');
-      }
-      return await response.json();
+      return response.data;
     } catch (error) {
-      console.error(error);
+      console.error('Error updating player:', error);
       throw error;
     }
   },
@@ -84,18 +67,14 @@ const playerService = {
   // Delete a player by ID
   async deletePlayer(playerId) {
     try {
-      const response = await fetch(`${API_URL}/${playerId}`, {
-        method: 'DELETE',
+      const response = await axios.delete(`${API_URL}/${playerId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      if (!response.ok) {
-        throw new Error('Failed to delete player');
-      }
-      return await response.json();
+      return response.data;
     } catch (error) {
-      console.error(error);
+      console.error('Error deleting player:', error);
       throw error;
     }
   },
