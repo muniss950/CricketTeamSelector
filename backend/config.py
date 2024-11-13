@@ -3,6 +3,7 @@ import mysql.connector
 
 db_config = {
     'host': 'localhost',
+    'port':3306,
     'user': 'root',
     'password': os.environ.get('DB_PASSWORD','12345'),
     # 'password': 'kohli6639',

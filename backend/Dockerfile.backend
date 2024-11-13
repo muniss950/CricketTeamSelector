@@ -1,7 +1,11 @@
-
-# Dockerfile.backend
-# Use an official Python runtime as a parent image
 FROM python:3.9-slim
+
+# Install pkg-config and MySQL development libraries
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libmariadb-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container
 WORKDIR /app
