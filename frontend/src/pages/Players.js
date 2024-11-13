@@ -24,7 +24,7 @@ const Players = () => {
   }, []);
 
   const handleRowClick = (player) => {
-    navigate(`/batting/${player.Player_ID}`);  // Adjust key if needed
+    navigate(`/stats/${player.Player_ID}`);  // Adjust key if needed
   };
 
   if (error) {
