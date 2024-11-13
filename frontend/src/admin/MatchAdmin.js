@@ -1,26 +1,32 @@
-
 import React, { useState, useEffect } from 'react';
 import cricketMatchService from '../services/cricketMatchServices';
+import { TournamentsService } from '../services/tournamentServices';
+import { TeamService } from '../services/teamServices';
 
 const MatchPage = () => {
   const [matches, setMatches] = useState([]);
   const [newMatch, setNewMatch] = useState({
-    match_date: '',
-    tournament_id: '',
-    team1_id: '',
-    team2_id: '',
-    winner: null,
-    stage: '',
+    Match_Date: '',
+    Tournament_ID: '',
+    Team1_ID: '',
+    Team2_ID: '',
+    Stage: '',
   });
   const [editingMatch, setEditingMatch] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [tournaments, setTournaments] = useState([]);
+  const [teams, setTeams] = useState([]); // Store teams data
+  const [winner, setWinner] = useState(''); // Track the winner separately for both Add and Edit forms
 
-  // Fetch all matches on component mount
+  // Fetch all matches, tournaments, and teams on component mount
   useEffect(() => {
     fetchMatches();
+    fetchTournaments();
+    fetchTeams(); // Add this call to fetch teams
   }, []);
 
+  // Fetch matches from the API
   const fetchMatches = async () => {
     try {
       const data = await cricketMatchService.getAllMatches();
@@ -28,6 +34,29 @@ const MatchPage = () => {
     } catch (error) {
       console.error("Error fetching matches:", error);
       setError('Failed to fetch matches');
+    }
+  };
+
+  // Fetch tournaments from the API
+  const fetchTournaments = async () => {
+    try {
+      const data = await TournamentsService.getAllTournaments();
+      setTournaments(data);
+    } catch (error) {
+      console.error("Error fetching tournaments:", error);
+      setError('Failed to fetch tournaments');
+    }
+  };
+
+  // Fetch teams from the API
+  const fetchTeams = async () => {
+    try {
+      const teamsData = await TeamService.getAllTeams();
+      console.log("Teams data: ", teamsData);  // Check the structure of the teams data
+      setTeams(teamsData);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      setError('Failed to fetch teams');
     }
   };
 
@@ -43,51 +72,93 @@ const MatchPage = () => {
     setEditingMatch({ ...editingMatch, [name]: value });
   };
 
-  // Add a new match
+  // Handle winner selection change for Add Match
+  const handleWinnerChange = (e) => {
+    setWinner(e.target.value);
+  };
+
+  // Handle winner selection change for Edit Match
+  const handleEditWinnerChange = (e) => {
+    setWinner(e.target.value);
+  };
+
   const handleCreateMatch = async () => {
-    if (!newMatch.match_date || !newMatch.tournament_id || !newMatch.team1_id || !newMatch.team2_id || !newMatch.stage) {
+    // Check if all required fields are filled
+    if (!newMatch.Match_Date || !newMatch.Tournament_ID || !newMatch.Team1_ID || !newMatch.Team2_ID || !newMatch.Stage || !winner) {
       setError('All fields are required to add a new match.');
       return;
     }
 
+    // Validate Match_Date to ensure it's not empty
+    if (newMatch.Match_Date === '') {
+      setError('Match Date cannot be empty.');
+      return;
+    }
+
+    // Format the Match_Date to YYYY-MM-DD if necessary (for MySQL)
+    const formattedDate = new Date(newMatch.Match_Date).toISOString().split('T')[0];
+
+    // Proceed if the date is valid
+    if (isNaN(new Date(formattedDate))) {
+      setError('Invalid date format.');
+      return;
+    }
+
     try {
-      await cricketMatchService.addMatch(newMatch);
-      fetchMatches();
+      // Add the match using the service
+      await cricketMatchService.addMatch({ ...newMatch, Match_Date: formattedDate, Winner: winner });
+      fetchMatches(); // Refresh the match list
       setSuccess(true);
       setNewMatch({
-        match_date: '',
-        tournament_id: '',
-        team1_id: '',
-        team2_id: '',
-        winner: null,
-        stage: '',
+        Match_Date: '',
+        Tournament_ID: '',
+        Team1_ID: '',
+        Team2_ID: '',
+        Stage: '',
       });
+      setWinner(''); // Reset winner after submitting the form
     } catch (error) {
       console.error("Error adding match:", error);
       setError('Failed to add match');
     }
   };
 
-  // Update an existing match (Only update fields that were changed)
   const handleUpdateMatch = async () => {
     const updatedMatch = { ...editingMatch };
 
-    // Remove fields that are empty (not updated)
+    // Validate Match_Date to ensure it's not empty
+    if (updatedMatch.Match_Date === '') {
+      setError('Match Date cannot be empty.');
+      return;
+    }
+
+    // Format the Match_Date to YYYY-MM-DD if necessary (for MySQL)
+    const formattedDate = new Date(updatedMatch.Match_Date).toISOString().split('T')[0];
+
+    // Proceed if the date is valid
+    if (isNaN(new Date(formattedDate))) {
+      setError('Invalid date format.');
+      return;
+    }
+
+    // Remove empty or null fields that weren't updated
     Object.keys(updatedMatch).forEach((key) => {
       if (updatedMatch[key] === '' || updatedMatch[key] === null) {
         delete updatedMatch[key];
       }
     });
 
-    if (!updatedMatch.match_date || !updatedMatch.tournament_id || !updatedMatch.team1_id || !updatedMatch.team2_id || !updatedMatch.stage) {
+    // Check if all necessary fields are filled after cleaning
+    if (!updatedMatch.Match_Date || !updatedMatch.Tournament_ID || !updatedMatch.Team1_ID || !updatedMatch.Team2_ID || !updatedMatch.Stage || !winner) {
       setError('All fields are required to update the match.');
       return;
     }
 
     try {
-      await cricketMatchService.updateMatch(editingMatch.Match_ID, updatedMatch);
-      fetchMatches();
-      setEditingMatch(null);
+      // Update the match using the service
+      await cricketMatchService.updateMatch(editingMatch.Match_ID, { ...updatedMatch, Match_Date: formattedDate, Winner: winner });
+      fetchMatches(); // Refresh the match list
+      setEditingMatch(null); // Reset editing state
       setSuccess(true);
     } catch (error) {
       console.error("Error updating match:", error);
@@ -121,63 +192,72 @@ const MatchPage = () => {
         <form>
           <label>
             Match Date:
-            <input type="date" name="match_date" value={newMatch.match_date} onChange={handleInputChange} />
+            <input type="date" name="Match_Date" value={newMatch.Match_Date} onChange={handleInputChange} />
           </label>
           <label>
-            Tournament ID:
-            <input type="text" name="tournament_id" value={newMatch.tournament_id} onChange={handleInputChange} />
+            Tournament:
+            <select name="Tournament_ID" value={newMatch.Tournament_ID} onChange={handleInputChange}>
+              <option value="">Select Tournament</option>
+              {tournaments.map(tournament => (
+                <option key={tournament.Tournament_ID} value={tournament.Tournament_ID}>{tournament.Tournament_Name}</option>
+              ))}
+            </select>
           </label>
           <label>
-            Team 1 ID:
-            <input type="text" name="team1_id" value={newMatch.team1_id} onChange={handleInputChange} />
+            Team 1:
+            <select name="Team1_ID" value={newMatch.Team1_ID} onChange={handleInputChange}>
+              <option value="">Select Team 1</option>
+              {teams.map(team => (
+                <option key={team.Team_ID} value={team.Team_ID}>{team.Team_Name}</option>
+              ))}
+            </select>
           </label>
           <label>
-            Team 2 ID:
-            <input type="text" name="team2_id" value={newMatch.team2_id} onChange={handleInputChange} />
+            Team 2:
+            <select name="Team2_ID" value={newMatch.Team2_ID} onChange={handleInputChange}>
+              <option value="">Select Team 2</option>
+              {teams.map(team => (
+                <option key={team.Team_ID} value={team.Team_ID}>{team.Team_Name}</option>
+              ))}
+            </select>
           </label>
           <label>
             Winner:
-            <input type="text" name="winner" value={newMatch.winner || ''} onChange={handleInputChange} />
+            <select name="Winner" value={winner} onChange={handleWinnerChange}>
+              <option value="">Select Winner</option>
+              {newMatch.Team1_ID && newMatch.Team2_ID && (
+                <>
+                  <option value={newMatch.Team1_ID}>
+                    {teams.find(team => team.Team_ID === newMatch.Team1_ID)?.Team_Name}
+                  </option>
+                  <option value={newMatch.Team2_ID}>
+                    {teams.find(team => team.Team_ID === newMatch.Team2_ID)?.Team_Name}
+                  </option>
+                </>
+              )}
+            </select>
           </label>
           <label>
             Stage:
-            <input type="text" name="stage" value={newMatch.stage} onChange={handleInputChange} />
+            <input type="text" name="Stage" value={newMatch.Stage} onChange={handleInputChange} />
           </label>
           <button type="button" onClick={handleCreateMatch}>Add Match</button>
         </form>
       </div>
 
-      {/* Table of all matches */}
-      <h3>All Matches</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Match Date</th>
-            <th>Tournament ID</th>
-            <th>Team 1</th>
-            <th>Team 2</th>
-            <th>Winner</th>
-            <th>Stage</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      {/* Matches list */}
+      <div>
+        <h3>Match List</h3>
+        <ul>
           {matches.map((match) => (
-            <tr key={match.Match_ID}>
-              <td>{match.Match_Date}</td>
-              <td>{match.Tournament_ID}</td>
-              <td>{match.Team1_Name}</td>
-              <td>{match.Team2_Name}</td>
-              <td>{match.Winner_Name}</td>
-              <td>{match.Stage}</td>
-              <td>
-                <button onClick={() => setEditingMatch(match)}>Edit</button>
-                <button onClick={() => handleDeleteMatch(match.Match_ID)}>Delete</button>
-              </td>
-            </tr>
+            <li key={match.Match_ID}>
+              <p>{match.Match_Date} - {match.Team1_Name} vs {match.Team2_Name} - Winner: {match.Winner_Name}</p>
+              <button onClick={() => handleDeleteMatch(match.Match_ID)}>Delete</button>
+              <button onClick={() => setEditingMatch(match)}>Edit</button>
+            </li>
           ))}
-        </tbody>
-      </table>
+        </ul>
+      </div>
 
       {/* Form for editing an existing match */}
       {editingMatch && (
@@ -186,27 +266,50 @@ const MatchPage = () => {
           <form>
             <label>
               Match Date:
-              <input type="date" name="match_date" value={editingMatch.match_date} onChange={handleEditChange} />
+              <input type="date" name="Match_Date" value={editingMatch.Match_Date} onChange={handleEditChange} />
             </label>
             <label>
-              Tournament ID:
-              <input type="text" name="tournament_id" value={editingMatch.tournament_id} onChange={handleEditChange} />
+              Tournament:
+              <select name="Tournament_ID" value={editingMatch.Tournament_ID} onChange={handleEditChange}>
+                <option value="">Select Tournament</option>
+                {tournaments.map(tournament => (
+                  <option key={tournament.Tournament_ID} value={tournament.Tournament_ID}>{tournament.Tournament_Name}</option>
+                ))}
+              </select>
             </label>
             <label>
-              Team 1 ID:
-              <input type="text" name="team1_id" value={editingMatch.team1_id} onChange={handleEditChange} />
+              Team 1:
+              <select name="Team1_ID" value={editingMatch.Team1_ID} onChange={handleEditChange}>
+                <option value="">Select Team 1</option>
+                {teams.map(team => (
+                  <option key={team.Team_ID} value={team.Team_ID}>{team.Team_Name}</option>
+                ))}
+              </select>
             </label>
             <label>
-              Team 2 ID:
-              <input type="text" name="team2_id" value={editingMatch.team2_id} onChange={handleEditChange} />
+              Team 2:
+              <select name="Team2_ID" value={editingMatch.Team2_ID} onChange={handleEditChange}>
+                <option value="">Select Team 2</option>
+                {teams.map(team => (
+                  <option key={team.Team_ID} value={team.Team_ID}>{team.Team_Name}</option>
+                ))}
+              </select>
             </label>
             <label>
               Winner:
-              <input type="text" name="winner" value={editingMatch.winner || ''} onChange={handleEditChange} />
+              <select name="Winner" value={winner} onChange={handleEditWinnerChange}>
+                <option value="">Select Winner</option>
+                <option value={editingMatch.Team1_ID}>
+                  {teams.find(team => team.Team_ID === editingMatch.Team1_ID)?.Team_Name}
+                </option>
+                <option value={editingMatch.Team2_ID}>
+                  {teams.find(team => team.Team_ID === editingMatch.Team2_ID)?.Team_Name}
+                </option>
+              </select>
             </label>
             <label>
               Stage:
-              <input type="text" name="stage" value={editingMatch.stage} onChange={handleEditChange} />
+              <input type="text" name="Stage" value={editingMatch.Stage} onChange={handleEditChange} />
             </label>
             <button type="button" onClick={handleUpdateMatch}>Update Match</button>
           </form>
