@@ -12,7 +12,6 @@ const TableComponent = ({ data, onRowClick }) => {
 
   return (
     <div className="table-container">
-      <h2>Data Table</h2>
       <table className="styled-table">
         <thead>
           <tr>
