@@ -43,7 +43,7 @@ CREATE TABLE `Batting` (
   PRIMARY KEY (`Match_ID`,`Player_ID`,`Inning_Number`),
   KEY `fk_batting_player` (`Player_ID`),
   CONSTRAINT `Batting_ibfk_2` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`) ON DELETE CASCADE,
-  CONSTRAINT `fk_batting_player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_batting_player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -53,8 +53,6 @@ CREATE TABLE `Batting` (
 
 LOCK TABLES `Batting` WRITE;
 /*!40000 ALTER TABLE `Batting` DISABLE KEYS */;
-INSERT INTO `Batting` VALUES
-(6,3,60,33,5,2,3,1);
 /*!40000 ALTER TABLE `Batting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +75,7 @@ CREATE TABLE `Bowling` (
   PRIMARY KEY (`Match_ID`,`Player_ID`,`Inning_Number`),
   KEY `fk_bowling_player` (`Player_ID`),
   CONSTRAINT `Bowling_ibfk_2` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`) ON DELETE CASCADE,
-  CONSTRAINT `fk_bowling_player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_bowling_player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -87,8 +85,6 @@ CREATE TABLE `Bowling` (
 
 LOCK TABLES `Bowling` WRITE;
 /*!40000 ALTER TABLE `Bowling` DISABLE KEYS */;
-INSERT INTO `Bowling` VALUES
-(5,3,4,24,30,2,5,1);
 /*!40000 ALTER TABLE `Bowling` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,12 +104,12 @@ CREATE TABLE `Cricket_Match` (
   `Winner` int(11) DEFAULT NULL,
   `Stage` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`Match_ID`),
+  KEY `Cricket_Match_ibfk_1` (`Team1_ID`),
+  KEY `Cricket_Match_ibfk_2` (`Team2_ID`),
   KEY `fkt` (`Tournament_ID`),
-  KEY `Team1_ID` (`Team1_ID`),
-  KEY `Team2_ID` (`Team2_ID`),
-  CONSTRAINT `Cricket_Match_ibfk_1` FOREIGN KEY (`Team1_ID`) REFERENCES `Team` (`Team_ID`),
-  CONSTRAINT `Cricket_Match_ibfk_2` FOREIGN KEY (`Team2_ID`) REFERENCES `Team` (`Team_ID`),
-  CONSTRAINT `fkt` FOREIGN KEY (`Tournament_ID`) REFERENCES `Tournament` (`Tournament_ID`)
+  CONSTRAINT `Cricket_Match_ibfk_1` FOREIGN KEY (`Team1_ID`) REFERENCES `Team` (`Team_ID`) ON DELETE CASCADE,
+  CONSTRAINT `Cricket_Match_ibfk_2` FOREIGN KEY (`Team2_ID`) REFERENCES `Team` (`Team_ID`) ON DELETE CASCADE,
+  CONSTRAINT `fkt` FOREIGN KEY (`Tournament_ID`) REFERENCES `Tournament` (`Tournament_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -123,8 +119,6 @@ CREATE TABLE `Cricket_Match` (
 
 LOCK TABLES `Cricket_Match` WRITE;
 /*!40000 ALTER TABLE `Cricket_Match` DISABLE KEYS */;
-INSERT INTO `Cricket_Match` VALUES
-(3,'2024-03-01',NULL,1,2,NULL,NULL);
 /*!40000 ALTER TABLE `Cricket_Match` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,9 +146,6 @@ CREATE TABLE `Inning` (
 
 LOCK TABLES `Inning` WRITE;
 /*!40000 ALTER TABLE `Inning` DISABLE KEYS */;
-INSERT INTO `Inning` VALUES
-(3,1,NULL,NULL,NULL),
-(3,2,45,14.2,3);
 /*!40000 ALTER TABLE `Inning` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +165,7 @@ CREATE TABLE `Player` (
   `DOB` date DEFAULT NULL,
   PRIMARY KEY (`Player_ID`),
   KEY `fkteam` (`Team_ID`),
-  CONSTRAINT `fkteam` FOREIGN KEY (`Team_ID`) REFERENCES `Team` (`Team_ID`)
+  CONSTRAINT `fkteam` FOREIGN KEY (`Team_ID`) REFERENCES `Team` (`Team_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -187,8 +178,7 @@ LOCK TABLES `Player` WRITE;
 INSERT INTO `Player` VALUES
 (5,'dhoni',NULL,NULL,NULL,NULL),
 (6,'kohli',NULL,NULL,NULL,NULL),
-(8,'Sachin','M',NULL,NULL,NULL),
-(9,'Sachin','F','Batsman',2,'2024-11-05');
+(8,'Sachin','M',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `Player` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,13 +230,10 @@ DROP TABLE IF EXISTS `Squad`;
 CREATE TABLE `Squad` (
   `Player_ID` int(11) NOT NULL,
   `Team_ID` int(11) NOT NULL,
-  `Match_ID` int(11) NOT NULL,
-  PRIMARY KEY (`Player_ID`,`Team_ID`,`Match_ID`),
-  KEY `Team_ID` (`Team_ID`),
-  KEY `Squad_ibfk_2` (`Match_ID`),
-  CONSTRAINT `Squad_ibfk_1` FOREIGN KEY (`Team_ID`) REFERENCES `Team` (`Team_ID`),
-  CONSTRAINT `Squad_ibfk_2` FOREIGN KEY (`Match_ID`) REFERENCES `Cricket_Match` (`Match_ID`) ON DELETE CASCADE,
-  CONSTRAINT `fkp` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`)
+  PRIMARY KEY (`Player_ID`,`Team_ID`),
+  KEY `fk_squad_team` (`Team_ID`),
+  CONSTRAINT `fk_squad_player` FOREIGN KEY (`Player_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_squad_team` FOREIGN KEY (`Team_ID`) REFERENCES `Team` (`Team_ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -257,8 +244,10 @@ CREATE TABLE `Squad` (
 LOCK TABLES `Squad` WRITE;
 /*!40000 ALTER TABLE `Squad` DISABLE KEYS */;
 INSERT INTO `Squad` VALUES
-(5,2,3),
-(6,2,3);
+(5,1),
+(6,1),
+(6,6),
+(8,6);
 /*!40000 ALTER TABLE `Squad` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -276,8 +265,8 @@ CREATE TABLE `Team` (
   `Captain_ID` int(11) DEFAULT NULL,
   PRIMARY KEY (`Team_ID`),
   KEY `fkcaptain` (`Captain_ID`),
-  CONSTRAINT `fkcaptain` FOREIGN KEY (`Captain_ID`) REFERENCES `Player` (`Player_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `fkcaptain` FOREIGN KEY (`Captain_ID`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,8 +277,8 @@ LOCK TABLES `Team` WRITE;
 /*!40000 ALTER TABLE `Team` DISABLE KEYS */;
 INSERT INTO `Team` VALUES
 (1,'Mumbai Indians',NULL,NULL),
-(2,'CSK',NULL,NULL),
-(4,'DT Titans','T20',NULL);
+(4,'DT Titans','T20',NULL),
+(6,'GT','T20',5);
 /*!40000 ALTER TABLE `Team` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -304,9 +293,9 @@ CREATE TABLE `Teams_List` (
   `Team_ID` int(11) NOT NULL,
   `Tournament_ID` int(11) NOT NULL,
   PRIMARY KEY (`Team_ID`,`Tournament_ID`),
-  KEY `Tournament_ID` (`Tournament_ID`),
-  CONSTRAINT `Teams_List_ibfk_1` FOREIGN KEY (`Team_ID`) REFERENCES `Team` (`Team_ID`),
-  CONSTRAINT `Teams_List_ibfk_2` FOREIGN KEY (`Tournament_ID`) REFERENCES `Tournament` (`Tournament_ID`)
+  KEY `Teams_List_ibfk_2` (`Tournament_ID`),
+  CONSTRAINT `Teams_List_ibfk_1` FOREIGN KEY (`Team_ID`) REFERENCES `Team` (`Team_ID`) ON DELETE CASCADE,
+  CONSTRAINT `Teams_List_ibfk_2` FOREIGN KEY (`Tournament_ID`) REFERENCES `Tournament` (`Tournament_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -316,8 +305,6 @@ CREATE TABLE `Teams_List` (
 
 LOCK TABLES `Teams_List` WRITE;
 /*!40000 ALTER TABLE `Teams_List` DISABLE KEYS */;
-INSERT INTO `Teams_List` VALUES
-(2,1);
 /*!40000 ALTER TABLE `Teams_List` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -399,13 +386,12 @@ CREATE TABLE `ball_by_ball` (
   `Inning_Number` int(11) NOT NULL,
   `extras` enum('NB','W','By','LB','NoExtras') DEFAULT NULL,
   PRIMARY KEY (`Match_ID`,`Inning_Number`,`over_no`,`bowl_no`),
-  KEY `on_strike` (`on_strike`),
-  KEY `other_end` (`other_end`),
-  KEY `bowler` (`bowler`),
-  CONSTRAINT `ball_by_ball_ibfk_1` FOREIGN KEY (`on_strike`) REFERENCES `Player` (`Player_ID`),
-  CONSTRAINT `ball_by_ball_ibfk_2` FOREIGN KEY (`other_end`) REFERENCES `Player` (`Player_ID`),
-  CONSTRAINT `ball_by_ball_ibfk_3` FOREIGN KEY (`bowler`) REFERENCES `Player` (`Player_ID`),
-  CONSTRAINT `fk` FOREIGN KEY (`Match_ID`, `Inning_Number`) REFERENCES `Inning` (`Match_ID`, `Inning_Number`)
+  KEY `ball_by_ball_ibfk_1` (`on_strike`),
+  KEY `ball_by_ball_ibfk_2` (`other_end`),
+  KEY `ball_by_ball_ibfk_3` (`bowler`),
+  CONSTRAINT `ball_by_ball_ibfk_1` FOREIGN KEY (`on_strike`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE,
+  CONSTRAINT `ball_by_ball_ibfk_2` FOREIGN KEY (`other_end`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE,
+  CONSTRAINT `ball_by_ball_ibfk_3` FOREIGN KEY (`bowler`) REFERENCES `Player` (`Player_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -471,4 +457,4 @@ USE `cricket`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2024-11-12 22:20:12
+-- Dump completed on 2024-11-13 16:44:38
