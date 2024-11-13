@@ -24,10 +24,10 @@ const squadService = {
     }
   },
 
-  // Fetch a specific squad entry by player_id, team_id, and match_id
-  async getSquadEntry(playerId, teamId, matchId) {
+  // Fetch a specific squad entry by player_id, team_id
+  async getSquadEntry(playerId, teamId) {
     try {
-      const response = await fetch(`${API_URL}/${playerId}/${teamId}/${matchId}`, {
+      const response = await fetch(`${API_URL}/${playerId}/${teamId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ const squadService = {
   },
 
   // Add a new squad entry
-  async addSquadEntry(playerId, teamId, matchId) {
+  async addSquadEntry(playerId, teamId) {
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -55,8 +55,7 @@ const squadService = {
         },
         body: JSON.stringify({
           Player_ID: playerId,
-          Team_ID: teamId,
-          Match_ID: matchId,
+          Team_ID: teamId
         }),
       });
 
@@ -72,9 +71,9 @@ const squadService = {
   },
 
   // Update an existing squad entry
-  async updateSquadEntry(playerId, teamId, matchId, newPlayerId, newTeamId, newMatchId) {
+  async updateSquadEntry(playerId, teamId, newPlayerId, newTeamId) {
     try {
-      const response = await fetch(`${API_URL}/${playerId}/${teamId}/${matchId}`, {
+      const response = await fetch(`${API_URL}/${playerId}/${teamId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +81,6 @@ const squadService = {
         body: JSON.stringify({
           Player_ID: newPlayerId,
           Team_ID: newTeamId,
-          Match_ID: newMatchId,
         }),
       });
 
@@ -98,9 +96,9 @@ const squadService = {
   },
 
   // Delete a squad entry
-  async deleteSquadEntry(playerId, teamId, matchId) {
+  async deleteSquadEntry(playerId, teamId) {
     try {
-      const response = await fetch(`${API_URL}/${playerId}/${teamId}/${matchId}`, {
+      const response = await fetch(`${API_URL}/${playerId}/${teamId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
