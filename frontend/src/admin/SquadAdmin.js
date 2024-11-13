@@ -1,138 +1,181 @@
-
 import React, { useEffect, useState } from 'react';
 import { SquadService } from '../services/squadServices';
+import { TeamService } from '../services/teamServices';
+import { PlayerService } from '../services/playerServices';
+import TableComponent from './TableAdmin'; // Import the new TableComponent
 
 const SquadPage = () => {
+  const [teams, setTeams] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState(null);
   const [squadEntries, setSquadEntries] = useState([]);
-  const [selectedSquadEntry, setSelectedSquadEntry] = useState(null);
-  const [newSquadEntry, setNewSquadEntry] = useState({ Player_ID: '', Team_ID: '' });
-  const [editSquadEntry, setEditSquadEntry] = useState(null);
+  const [newSquadEntry, setNewSquadEntry] = useState({ Player_ID: '' });
   const [error, setError] = useState(null);
+  const [isTeamDone, setIsTeamDone] = useState(false); // Track if team task is done
 
-  // Fetch all squad entries when the component mounts
   useEffect(() => {
-    fetchSquadEntries();
+    fetchTeams();
+    fetchPlayers();
   }, []);
 
-  const fetchSquadEntries = async () => {
+  // Fetch teams
+  const fetchTeams = async () => {
     try {
-      const data = await SquadService.getAllSquadEntries();
-      setSquadEntries(data);
+      const teamList = await TeamService.getAllTeams();
+      setTeams(teamList);
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const handleSelectSquadEntry = async (playerId, teamId) => {
+  // Fetch players for dropdown selection
+  const fetchPlayers = async () => {
     try {
-      const entry = await SquadService.getSquadEntry(playerId, teamId);
-      setSelectedSquadEntry(entry);
+      const playerList = await PlayerService.getPlayers();
+      setPlayers(playerList);
     } catch (error) {
       setError(error.message);
     }
   };
 
+  // Fetch squad entries for a selected team
+  const fetchSquadEntries = async (teamId) => {
+    try {
+      const entries = await SquadService.getAllSquadEntries();
+      const filteredEntries = entries.filter((entry) => entry.Team_ID === teamId);
+      setSquadEntries(filteredEntries);
+      setSelectedTeam(teamId);
+      setIsTeamDone(false); // Reset the "done" state when selecting a new team
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  // Add a new squad entry
   const handleAddSquadEntry = async () => {
-    try {
-      const addedEntry = await SquadService.addSquadEntry(newSquadEntry.Player_ID, newSquadEntry.Team_ID);
-      setSquadEntries([...squadEntries, addedEntry]);
-      setNewSquadEntry({ Player_ID: '', Team_ID: '' });
-    } catch (error) {
-      setError(error.message);
+    if (!newSquadEntry.Player_ID) {
+      setError('Please select a player.');
+      return;
     }
-  };
 
-  const handleUpdateSquadEntry = async () => {
-    if (editSquadEntry) {
-      try {
-        const updatedEntry = await SquadService.updateSquadEntry(
-          editSquadEntry.Player_ID,
-          editSquadEntry.Team_ID,
-          editSquadEntry.Player_ID,
-          editSquadEntry.Team_ID,
-        );
-        setSquadEntries(
-          squadEntries.map((entry) =>
-            entry.Player_ID === updatedEntry.Player_ID &&
-            entry.Team_ID === updatedEntry.Team_ID
-            ? updatedEntry: entry
-          )
-        );
-        setEditSquadEntry(null);
-      } catch (error) {
-        setError(error.message);
+    try {
+      // Fetch player details from PlayerService using getPlayer
+      const player = await PlayerService.getPlayer(newSquadEntry.Player_ID);
+      if (!player) {
+        setError('Player not found.');
+        return;
       }
-    }
-  };
 
-  const handleDeleteSquadEntry = async (playerId, teamId) => {
-    try {
-      await SquadService.deleteSquadEntry(playerId, teamId);
-      setSquadEntries(squadEntries.filter((entry) => entry.Player_ID !== playerId || entry.Team_ID !== teamId));
+      // Add the squad entry
+      const addedEntry = await SquadService.addSquadEntry(newSquadEntry.Player_ID, selectedTeam);
+
+      // Update squadEntries with the player details
+      setSquadEntries([
+        ...squadEntries,
+        { Player_ID: player.Player_ID, Player_Name: player.Player_Name },
+      ]);
+
+      setNewSquadEntry({ Player_ID: '' }); // Reset player selection
+      setError(null); // Clear error
     } catch (error) {
       setError(error.message);
     }
   };
+
+  // Delete a squad entry
+  const handleDeleteSquadEntry = async (playerId) => {
+    try {
+      await SquadService.deleteSquadEntry(playerId, selectedTeam);
+      setSquadEntries(squadEntries.filter((entry) => entry.Player_ID !== playerId));
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  // Handle row click if needed (e.g., edit squad entry)
+  const handleRowClick = (entry) => {
+    console.log('Row clicked:', entry);
+    // You can add more actions like editing the squad entry here
+  };
+
+  // Handle button click (Delete or other actions)
+  const handleButtonClick = (action, item) => {
+    if (action === 'delete') {
+      handleDeleteSquadEntry(item.Player_ID);
+    }
+    // Handle other actions here
+  };
+
+  // Mark the team task as done
+  const handleMarkAsDone = () => {
+    setIsTeamDone(true); // Mark the task as done for this team
+  };
+
+  // Button configuration for the team table
+  const teamButtons = [
+    { label: 'View Squad', action: 'view' }
+  ];
+
+  // Button configuration for the squad table
+  const squadButtons = [
+    { label: 'Delete', action: 'delete' }
+  ];
 
   return (
     <div>
-      <h1>Squad Entries</h1>
+      <h1>Teams</h1>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Display all squad entries */}
-      <ul>
-        {squadEntries.map((entry) => (
-          <li key={`${entry.Player_ID}-${entry.Team_ID}`}>
-            Player ID: {entry.Player_ID}, Team ID: {entry.Team_ID}
-            <button onClick={() => handleSelectSquadEntry(entry.Player_ID, entry.Team_ID)}>View</button>
-            <button onClick={() => setEditSquadEntry({ ...entry })}>Edit</button>
-            <button onClick={() => handleDeleteSquadEntry(entry.Player_ID, entry.Team_ID)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-
-      {/* Add new squad entry form */}
-      <h2>Add New Squad Entry</h2>
-      <input
-        type="number"
-        placeholder="Player ID"
-        value={newSquadEntry.Player_ID}
-        onChange={(e) => setNewSquadEntry({ ...newSquadEntry, Player_ID: e.target.value })}
+      {/* Team List Table */}
+      <h2>Select a Team to View/Edit Squad</h2>
+      <TableComponent
+        data={teams}
+        columns={['Team_Name']}
+        onRowClick={(team) => fetchSquadEntries(team.Team_ID)} // Fetch squad entries when a team is clicked
+        onButtonClick={(action, item) => {
+          if (action === 'view') {
+            fetchSquadEntries(item.Team_ID);
+          }
+        }}
+        buttons={teamButtons}
       />
-      <input
-        type="number"
-        placeholder="Team ID"
-        value={newSquadEntry.Team_ID}
-        onChange={(e) => setNewSquadEntry({ ...newSquadEntry, Team_ID: e.target.value })}
-      />
-      <button onClick={handleAddSquadEntry}>Add Squad Entry</button>
 
-      {/* Edit squad entry form */}
-      {editSquadEntry && (
+      {/* Squad Table for Selected Team */}
+      {selectedTeam && !isTeamDone && (
         <>
-          <h2>Edit Squad Entry</h2>
-          <input
-            type="number"
-            value={editSquadEntry.Player_ID}
-            onChange={(e) => setEditSquadEntry({ ...editSquadEntry, Player_ID: e.target.value })}
-          />
-          <input
-            type="number"
-            value={editSquadEntry.Team_ID}
-            onChange={(e) => setEditSquadEntry({ ...editSquadEntry, Team_ID: e.target.value })}
-          />
-          <button onClick={handleUpdateSquadEntry}>Save</button>
-          <button onClick={() => setEditSquadEntry(null)}>Cancel</button>
-        </>
-      )}
+          <h2>Squad for Team {teams.find((team) => team.Team_ID === selectedTeam)?.Team_Name}</h2>
 
-      {/* Display selected squad entry details */}
-      {selectedSquadEntry && (
-        <>
-          <h2>Squad Entry Details</h2>
-          <p>Player ID: {selectedSquadEntry.Player_ID}</p>
-          <p>Team ID: {selectedSquadEntry.Team_ID}</p>
-          <button onClick={() => setSelectedSquadEntry(null)}>Close</button>
+          {/* Use TableComponent for squad entries */}
+          <TableComponent 
+            data={squadEntries} 
+            onRowClick={handleRowClick} 
+            onButtonClick={handleButtonClick} // Pass the button click handler to TableComponent
+            buttons={squadButtons} // Passing the delete button configuration
+          />
+
+          {/* Add New Squad Entry */}
+          <h3>Add New Squad Entry</h3>
+          <select
+            value={newSquadEntry.Player_ID}
+            onChange={(e) => setNewSquadEntry({ Player_ID: e.target.value })}
+          >
+            <option value="">Select Player</option>
+            {players.map((player) => (
+              <option key={player.Player_ID} value={player.Player_ID}>
+                {player.Player_Name}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleAddSquadEntry}>Add Squad Entry</button>
+
+          {/* Mark as Done Button */}
+          <div>
+            {!isTeamDone ? (
+              <button onClick={handleMarkAsDone}>Mark as Done</button>
+            ) : (
+              <p>Task for this team is complete!</p>
+            )}
+          </div>
         </>
       )}
     </div>
