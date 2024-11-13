@@ -1,24 +1,27 @@
-# docker-compose.yml
-version: '3'
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.backend
+    build: .
+    container_name: backend
     ports:
       - "5000:5000"
-    environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
     depends_on:
-      - frontend
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.frontend
-    ports:
-      - "3000:3000"
+      - mysql
     environment:
-      - NODE_ENV=development
+      - FLASK_ENV=development
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: your_database_name
+      MYSQL_USER: your_user
+      MYSQL_PASSWORD: your_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
