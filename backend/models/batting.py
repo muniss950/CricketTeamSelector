@@ -26,6 +26,7 @@ class Batting:
         batting_data = cursor.fetchall()
         cursor.close()
         connection.close()
+        match_id=data.get("Match_ID"),
         return batting_data
 
     @staticmethod

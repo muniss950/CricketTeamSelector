@@ -84,6 +84,7 @@ def add_batting_stats():
     data = request.get_json()
     batting = Batting(
         player_id=data['Player_ID'],
+        match_id=data.get("Match_ID"),
         inning_number=data['Inning_Number'],
         runs_scored=data.get('Runs_Scored', 0),
         balls_faced=data.get('Balls_Faced', 0),
@@ -95,11 +96,12 @@ def add_batting_stats():
     return jsonify({"message": "Batting stats added successfully"}), 201
 
 # Route to update batting stats for a specific player and inning (without match_id)
-@batting_bp.route('/batting/<int:player_id>/<int:inning_number>', methods=['PUT'])
-def update_batting_stats(player_id, inning_number):
+@batting_bp.route('/batting/<int:player_id>/<int:match_id>/<int:inning_number>', methods=['PUT'])
+def update_batting_stats(player_id,match_id, inning_number):
     data = request.get_json()
     Batting.update_batting_stats(
         player_id=player_id,
+        match_id=match_id,
         inning_number=inning_number,
         runs_scored=data.get('Runs_Scored'),
         balls_faced=data.get('Balls_Faced'),
@@ -110,7 +112,7 @@ def update_batting_stats(player_id, inning_number):
     return jsonify({"message": "Batting stats updated successfully"})
 
 # Route to delete batting stats for a specific player and inning (without match_id)
-@batting_bp.route('/batting/<int:player_id>/<int:inning_number>', methods=['DELETE'])
-def delete_batting_stats(player_id, inning_number):
-    Batting.delete_batting_stats(player_id, inning_number)
+@batting_bp.route('/batting/<int:player_id>/<int:match_id>/<int:inning_number>', methods=['DELETE'])
+def delete_batting_stats(player_id, match_id,inning_number):
+    Batting.delete_batting_stats(player_id,match_id, inning_number)
     return jsonify({"message": "Batting stats deleted successfully"})
