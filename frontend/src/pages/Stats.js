@@ -5,7 +5,7 @@ import battingService from '../services/playerBattingStatsService'; // Adjust th
 import bowlingService from '../services/playerBowlingStatsService'; // Import the new bowling stats service
 import TableComponent from '../TableComponent';
 
-const BattingStats = () => {
+const Stats = () => {
   const { playerId } = useParams(); // Extract playerId from URL params
   const [battingStats, setBattingStats] = useState([]);
   const [bowlingStats, setBowlingStats] = useState([]);
@@ -62,4 +62,5 @@ const BattingStats = () => {
   );
 };
 
-export default BattingStats;
+export default Stats;
+

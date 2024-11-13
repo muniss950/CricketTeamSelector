@@ -6,7 +6,7 @@ import Teams from './pages/Teams';
 import Players from './pages/Players';
 import Tournaments from './pages/Tournament';
 import Matches from './pages/Match';
-import Batting from './pages/batting';
+import Stats from './pages/Stats';
 import Scorecard from './pages/Scorecard'; // Import Scorecard page
 import LoginPage from './pages/Login.js'
 import PlayerPage from './admin/PlayerAdmin';
@@ -24,7 +24,7 @@ const App = () => (
       <Route path="/tournaments" element={<Tournaments />} />
       <Route path="/matches" element={<Matches />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/batting/:playerId" element={<Batting />} />
+      <Route path="/stats/:playerId" element={<Stats />} />
       {/* Route for scorecard page with query parameters */}
       <Route path="/scorecard/:matchId" element={<Scorecard  />} />
       <Route path="/admin/players" element={<PlayerPage />} />
