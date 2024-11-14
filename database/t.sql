@@ -54,6 +54,7 @@ CREATE TABLE `Batting` (
 LOCK TABLES `Batting` WRITE;
 /*!40000 ALTER TABLE `Batting` DISABLE KEYS */;
 INSERT INTO `Batting` VALUES
+(5,6,0,0,0,0,-1,2),
 (6,6,45,30,5,2,3,1);
 /*!40000 ALTER TABLE `Batting` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -87,6 +88,8 @@ CREATE TABLE `Bowling` (
 
 LOCK TABLES `Bowling` WRITE;
 /*!40000 ALTER TABLE `Bowling` DISABLE KEYS */;
+INSERT INTO `Bowling` VALUES
+(8,6,0,0,0,0,0,2);
 /*!40000 ALTER TABLE `Bowling` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +155,7 @@ LOCK TABLES `Inning` WRITE;
 /*!40000 ALTER TABLE `Inning` DISABLE KEYS */;
 INSERT INTO `Inning` VALUES
 (6,1,65,15.2,6),
-(6,2,45,14.2,3);
+(6,2,27,0.833333,1);
 /*!40000 ALTER TABLE `Inning` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -410,9 +413,69 @@ CREATE TABLE `ball_by_ball` (
 LOCK TABLES `ball_by_ball` WRITE;
 /*!40000 ALTER TABLE `ball_by_ball` DISABLE KEYS */;
 INSERT INTO `ball_by_ball` VALUES
-(1,1,6,0,5,6,8,3,1,NULL);
+(1,1,6,0,5,6,8,3,1,NULL),
+(1,2,4,0,5,6,8,3,1,NULL),
+(1,1,6,0,5,6,8,6,2,NULL),
+(1,2,3,0,5,6,8,6,2,NULL),
+(1,4,6,0,5,6,8,6,2,NULL),
+(2,1,6,0,5,6,8,6,2,NULL),
+(2,2,6,1,5,6,8,6,2,NULL);
 /*!40000 ALTER TABLE `ball_by_ball` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_uca1400_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER after_ball_insert
+AFTER INSERT ON ball_by_ball
+FOR EACH ROW
+BEGIN
+    
+    DECLARE total_runs INT DEFAULT 0;
+    DECLARE total_wickets INT DEFAULT 0;
+    DECLARE total_balls INT DEFAULT 0;
+
+    
+    INSERT INTO Inning (Match_ID, Inning_Number, Total_Score, Total_Wickets, Overs)
+    VALUES (NEW.Match_ID, NEW.Inning_Number, 0, 0, 0)
+    ON DUPLICATE KEY UPDATE
+        Total_Score = Total_Score;
+
+    
+    INSERT INTO Batting (Match_ID, Inning_Number, Player_ID, Runs_Scored, Balls_Faced, Fours, Sixes)
+    VALUES (NEW.Match_ID, NEW.Inning_Number, NEW.on_strike, 0, 0, 0, 0)
+    ON DUPLICATE KEY UPDATE
+        Runs_Scored = Runs_Scored;
+
+    
+    INSERT INTO Bowling (Match_ID, Inning_Number, Player_ID, Overs_Bowled, Balls_Bowled, Runs_Conceded, Wickets_Taken)
+    VALUES (NEW.Match_ID, NEW.Inning_Number, NEW.bowler, 0, 0, 0, 0)
+    ON DUPLICATE KEY UPDATE
+        Runs_Conceded = Runs_Conceded;
+
+    
+    SELECT SUM(run_taken), SUM(wicket), COUNT(*) INTO total_runs, total_wickets, total_balls
+    FROM ball_by_ball
+    WHERE Match_ID = NEW.Match_ID AND Inning_Number = NEW.Inning_Number;
+
+    
+    UPDATE Inning
+    SET Total_Score = total_runs,
+        Total_Wickets = total_wickets,
+        Overs = FLOOR(total_balls / 6) + (total_balls % 6) / 6.0
+    WHERE Match_ID = NEW.Match_ID AND Inning_Number = NEW.Inning_Number;
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Dumping routines for database 'cricket'
@@ -514,4 +577,4 @@ USE `cricket`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2024-11-14 12:16:40
+-- Dump completed on 2024-11-14 12:48:55
