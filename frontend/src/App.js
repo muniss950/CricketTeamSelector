@@ -13,6 +13,7 @@ import PlayerPage from './admin/PlayerAdmin';
 import MatchPage from './admin/MatchAdmin';
 import TeamsPage from './admin/TeamAdmin'; 
 import SquadPage from './admin/SquadAdmin';
+import TournamentPage from './admin/TournamentAdmin';
 
 const App = () => (
   <Router>
@@ -31,6 +32,7 @@ const App = () => (
       <Route path="/admin/matches" element={<MatchPage />} />
       <Route path="/admin/teams" element={<TeamsPage />} />
       <Route path="/admin/squad" element={<SquadPage />} />
+      <Route path="/admin/tournaments" element={<TournamentPage />} />
     </Routes>
   </Router>
 );

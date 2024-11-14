@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { TournamentsService } from '../services/tournamentsServices';
+import { TournamentsService } from '../services/tournamentServices';
 
 const TournamentPage = () => {
   const [tournaments, setTournaments] = useState([]);
