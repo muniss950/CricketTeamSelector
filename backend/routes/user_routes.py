@@ -15,8 +15,7 @@ def add_user():
     User.add_user(
         username=data['username'],
         email=data['email'],
-        password=data['password'],
-        role=data.get('role', 'user')  # Defaults to 'user' if no role specified
+        password=data['password']
     )
     return jsonify({"message": "User added successfully"}), 201
 
@@ -32,6 +31,7 @@ def get_user(user_id):
 def update_user(user_id):
     data = request.get_json()
     updated = User.update_user(
+        user_id,
         username=data.get('username'),
         email=data.get('email'),
         password=data.get('password'),
