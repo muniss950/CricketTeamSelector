@@ -29,6 +29,20 @@ class User:
         finally:
             cursor.close()
             connection.close()
+    @classmethod
+    def get_all_users(cls):
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor(dictionary=True)
+
+        try:
+            cursor.execute("SELECT * FROM User")
+            result = cursor.fetchall()
+            if result:
+                return result
+            return None
+        finally:
+            cursor.close()
+            connection.close()
 
     @classmethod
     def get_user(cls, user_id):
@@ -39,7 +53,7 @@ class User:
             cursor.execute("SELECT * FROM User WHERE user_id = %s", (user_id,))
             result = cursor.fetchone()
             if result:
-                return cls(**result)
+                return result
             return None
         finally:
             cursor.close()
