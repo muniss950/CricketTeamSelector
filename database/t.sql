@@ -53,6 +53,8 @@ CREATE TABLE `Batting` (
 
 LOCK TABLES `Batting` WRITE;
 /*!40000 ALTER TABLE `Batting` DISABLE KEYS */;
+INSERT INTO `Batting` VALUES
+(6,6,45,30,5,2,3,1);
 /*!40000 ALTER TABLE `Batting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,7 +112,7 @@ CREATE TABLE `Cricket_Match` (
   CONSTRAINT `Cricket_Match_ibfk_1` FOREIGN KEY (`Team1_ID`) REFERENCES `Team` (`Team_ID`) ON DELETE CASCADE,
   CONSTRAINT `Cricket_Match_ibfk_2` FOREIGN KEY (`Team2_ID`) REFERENCES `Team` (`Team_ID`) ON DELETE CASCADE,
   CONSTRAINT `fkt` FOREIGN KEY (`Tournament_ID`) REFERENCES `Tournament` (`Tournament_ID`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,6 +121,8 @@ CREATE TABLE `Cricket_Match` (
 
 LOCK TABLES `Cricket_Match` WRITE;
 /*!40000 ALTER TABLE `Cricket_Match` DISABLE KEYS */;
+INSERT INTO `Cricket_Match` VALUES
+(6,'2024-11-13',3,4,1,4,'Final');
 /*!40000 ALTER TABLE `Cricket_Match` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -146,6 +150,9 @@ CREATE TABLE `Inning` (
 
 LOCK TABLES `Inning` WRITE;
 /*!40000 ALTER TABLE `Inning` DISABLE KEYS */;
+INSERT INTO `Inning` VALUES
+(6,1,65,15.2,6),
+(6,2,45,14.2,3);
 /*!40000 ALTER TABLE `Inning` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -246,6 +253,7 @@ LOCK TABLES `Squad` WRITE;
 INSERT INTO `Squad` VALUES
 (5,1),
 (6,1),
+(8,1),
 (6,6),
 (8,6);
 /*!40000 ALTER TABLE `Squad` ENABLE KEYS */;
@@ -278,7 +286,7 @@ LOCK TABLES `Team` WRITE;
 INSERT INTO `Team` VALUES
 (1,'Mumbai Indians',NULL,NULL),
 (4,'DT Titans','T20',NULL),
-(6,'GT','T20',5);
+(6,'GT','Test',5);
 /*!40000 ALTER TABLE `Team` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -323,7 +331,7 @@ CREATE TABLE `Tournament` (
   `Start_Date` date DEFAULT NULL,
   `End_Date` date DEFAULT NULL,
   PRIMARY KEY (`Tournament_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -333,8 +341,8 @@ CREATE TABLE `Tournament` (
 LOCK TABLES `Tournament` WRITE;
 /*!40000 ALTER TABLE `Tournament` DISABLE KEYS */;
 INSERT INTO `Tournament` VALUES
-(1,'IPL',NULL,NULL,NULL,NULL),
-(3,'PSL',NULL,NULL,NULL,NULL);
+(3,'PSL',NULL,NULL,NULL,NULL),
+(4,'SA20','T20','Franchise','2024-11-05','2024-11-22');
 /*!40000 ALTER TABLE `Tournament` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,7 +363,7 @@ CREATE TABLE `User` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -405,6 +413,55 @@ INSERT INTO `ball_by_ball` VALUES
 (1,1,6,0,5,6,8,3,1,NULL);
 /*!40000 ALTER TABLE `ball_by_ball` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'cricket'
+--
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GetPlayerByID` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_uca1400_ai_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetPlayerByID`(IN p_id INT)
+BEGIN
+    SELECT * FROM Player WHERE Player_ID = p_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `InsertPlayer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_uca1400_ai_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertPlayer`(
+    IN p_name VARCHAR(100), 
+    IN p_gender CHAR(1), 
+    IN p_role VARCHAR(50), 
+    IN p_team_id INT, 
+    IN p_dob DATE
+)
+BEGIN
+    INSERT INTO Player (Player_Name, Gender, Role, Team_ID, DOB)
+    VALUES (p_name, p_gender, p_role, p_team_id, p_dob);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Current Database: `cricket`
@@ -457,4 +514,4 @@ USE `cricket`;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2024-11-13 19:00:27
+-- Dump completed on 2024-11-14 12:16:40
