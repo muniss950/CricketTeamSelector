@@ -57,6 +57,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import userService from '../services/userServices';
+import './LoginPage.css';
 
 const LoginPage = ({ setIsAdmin }) => {
   const [username, setUsername] = useState('');
@@ -64,23 +65,20 @@ const LoginPage = ({ setIsAdmin }) => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    // Attempt to fetch all users and validate login
     const users = await userService.getAllUsers();
     if (!users) {
       alert('Error fetching users.');
       return;
     }
 
-    // Check if the user is the admin
     if (username === 'admin' && password === 'admin123') {
       setIsAdmin(true);
-      navigate('/admin'); // Redirect to the admin page
+      navigate('/admin');
     } else {
-      // Check if username and password match a user in the users list
       const user = users.find((user) => user.username === username && user.password === password);
       if (user) {
-        setIsAdmin(false); // Regular user login
-        navigate('/'); // Redirect to the homepage or user-specific page
+        setIsAdmin(false);
+        navigate('/');
       } else {
         alert('Invalid credentials');
       }
@@ -88,13 +86,26 @@ const LoginPage = ({ setIsAdmin }) => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Login</h2>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button onClick={handleLogin}>Login</button>
+      </div>
     </div>
   );
 };
 
 export default LoginPage;
+
