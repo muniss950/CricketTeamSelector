@@ -55,14 +55,15 @@ import MatchPage from './admin/MatchAdmin';
 import TeamsPage from './admin/TeamAdmin';
 import SquadPage from './admin/SquadAdmin';
 import TournamentPage from './admin/TournamentAdmin';
+import AdminDashboard from './admin/AdminDashboard';
 
 // Optional: Add a simple AdminDashboard component
-const AdminDashboard = () => (
-  <div>
-    <h2>Admin Dashboard</h2>
-    <p>Welcome to the Admin Dashboard! Select a section to manage.</p>
-  </div>
-);
+// const AdminDashboard = () => (
+//   <div>
+//     <h2>Admin Dashboard</h2>
+//     <p>Welcome to the Admin Dashboard! Select a section to manage.</p>
+//   </div>
+// );
 
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false); // Track if the user is an admin
