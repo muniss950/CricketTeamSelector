@@ -39,7 +39,6 @@
 
 // export default App;
 
-
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './pages/Navbar';
@@ -57,6 +56,14 @@ import TeamsPage from './admin/TeamAdmin';
 import SquadPage from './admin/SquadAdmin';
 import TournamentPage from './admin/TournamentAdmin';
 
+// Optional: Add a simple AdminDashboard component
+const AdminDashboard = () => (
+  <div>
+    <h2>Admin Dashboard</h2>
+    <p>Welcome to the Admin Dashboard! Select a section to manage.</p>
+  </div>
+);
+
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false); // Track if the user is an admin
 
@@ -73,9 +80,10 @@ const App = () => {
         <Route path="/stats/:playerId" element={<Stats />} />
         <Route path="/scorecard/:matchId" element={<Scorecard />} />
 
-        {/* Admin routes protected by checking isAdmin */}
+        {/* Base Admin route and protected admin routes */}
         {isAdmin ? (
           <>
+            <Route path="/admin" element={<AdminDashboard />} /> {/* Base /admin route */}
             <Route path="/admin/players" element={<PlayerPage />} />
             <Route path="/admin/matches" element={<MatchPage />} />
             <Route path="/admin/teams" element={<TeamsPage />} />
@@ -85,11 +93,7 @@ const App = () => {
         ) : (
           // Redirect unauthorized access to admin pages back to login
           <>
-            <Route path="/admin/players" element={<Navigate to="/login" />} />
-            <Route path="/admin/matches" element={<Navigate to="/login" />} />
-            <Route path="/admin/teams" element={<Navigate to="/login" />} />
-            <Route path="/admin/squad" element={<Navigate to="/login" />} />
-            <Route path="/admin/tournaments" element={<Navigate to="/login" />} />
+            <Route path="/admin/*" element={<Navigate to="/login" />} />
           </>
         )}
       </Routes>
