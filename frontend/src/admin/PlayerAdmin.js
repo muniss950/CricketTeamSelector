@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { PlayerService } from '../services/playerServices'; // Assuming playerService.js is in the same directory
 
 const PlayerPage = () => {
@@ -11,8 +11,8 @@ const PlayerPage = () => {
     DOB: '',
   });
   const [editingPlayer, setEditingPlayer] = useState(null);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null); // Error state
+  const [success, setSuccess] = useState(false); // Success state
 
   // Fetch all players
   useEffect(() => {
@@ -24,7 +24,8 @@ const PlayerPage = () => {
       const playersData = await PlayerService.getPlayers();
       setPlayers(playersData);
     } catch (error) {
-      setError('Failed to fetch players');
+      console.error('Error fetching players:', error);
+      setError(error?.response?.data?.error || 'Failed to fetch players');
     }
   };
 
@@ -47,8 +48,9 @@ const PlayerPage = () => {
         DOB: '',
       });
       setSuccess(true);
+      setError(null); // Clear any previous error
     } catch (error) {
-      setError('Failed to create player');
+      setError(error?.response?.data?.error || 'Failed to create player');
     }
   };
 
@@ -60,16 +62,16 @@ const PlayerPage = () => {
     }
 
     try {
-      console.log("update",editingPlayer)
       const updatedPlayer = await PlayerService.updatePlayer(editingPlayer.Player_ID, editingPlayer);
       const updatedPlayers = players.map(player =>
-        player.id === updatedPlayer.id ? updatedPlayer : player
+        player.Player_ID === updatedPlayer.Player_ID ? updatedPlayer : player
       );
       setPlayers(updatedPlayers);
       setEditingPlayer(null); // Reset editing state
       setSuccess(true);
+      setError(null); // Clear any previous error
     } catch (error) {
-      setError('Failed to update player');
+      setError(error?.response?.data?.error || 'Failed to update player');
     }
   };
 
@@ -77,10 +79,11 @@ const PlayerPage = () => {
   const handleDeletePlayer = async (playerId) => {
     try {
       await PlayerService.deletePlayer(playerId);
-      setPlayers(players.filter(player => player.id !== playerId));
+      setPlayers(players.filter(player => player.Player_ID !== playerId));
       setSuccess(true);
+      setError(null); // Clear any previous error
     } catch (error) {
-      setError('Failed to delete player');
+      setError(error?.response?.data?.error || 'Failed to delete player');
     }
   };
 
@@ -102,6 +105,8 @@ const PlayerPage = () => {
   return (
     <div>
       <h1>Player Management</h1>
+      
+      {/* Display error or success message */}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>Operation successful!</p>}
 
@@ -208,3 +213,4 @@ const PlayerPage = () => {
 };
 
 export default PlayerPage;
+
