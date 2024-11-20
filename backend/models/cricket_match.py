@@ -23,13 +23,10 @@ class CricketMatch:
                 cm.Team2_ID,
                 cm.Winner,
                 cm.Stage,
-                t1.Team_Name AS Team1_Name,
-                t2.Team_Name AS Team2_Name,
-                w.Team_Name AS Winner_Name
+                (SELECT Team_Name FROM Team WHERE Team_ID = cm.Team1_ID) AS Team1_Name,
+                (SELECT Team_Name FROM Team WHERE Team_ID = cm.Team2_ID) AS Team2_Name,
+                (SELECT Team_Name FROM Team WHERE Team_ID = cm.Winner) AS Winner_Name
             FROM Cricket_Match cm
-            LEFT JOIN Team t1 ON cm.Team1_ID = t1.Team_ID
-            LEFT JOIN Team t2 ON cm.Team2_ID = t2.Team_ID
-            LEFT JOIN Team w ON cm.Winner = w.Team_ID
         '''
         cursor.execute(query)
         matches = cursor.fetchall()
@@ -50,13 +47,10 @@ class CricketMatch:
                 cm.Team2_ID,
                 cm.Winner,
                 cm.Stage,
-                t1.Team_Name AS Team1_Name,
-                t2.Team_Name AS Team2_Name,
-                w.Team_Name AS Winner_Name
+                (SELECT Team_Name FROM Team WHERE Team_ID = cm.Team1_ID) AS Team1_Name,
+                (SELECT Team_Name FROM Team WHERE Team_ID = cm.Team2_ID) AS Team2_Name,
+                (SELECT Team_Name FROM Team WHERE Team_ID = cm.Winner) AS Winner_Name
             FROM Cricket_Match cm
-            LEFT JOIN Team t1 ON cm.Team1_ID = t1.Team_ID
-            LEFT JOIN Team t2 ON cm.Team2_ID = t2.Team_ID
-            LEFT JOIN Team w ON cm.Winner = w.Team_ID
             WHERE cm.Match_ID = %s
         '''
         cursor.execute(query, (match_id,))
@@ -116,3 +110,4 @@ class CricketMatch:
         connection.commit()
         cursor.close()
         connection.close()
+
