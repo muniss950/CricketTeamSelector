@@ -38,7 +38,6 @@ END$$
 DELIMITER ;
 DELIMITER $$
 
--- Trigger to ensure Player's DOB is valid (10 years or older)
 CREATE TRIGGER before_player_insert_dob_check
 BEFORE INSERT ON Player
 FOR EACH ROW
@@ -59,7 +58,6 @@ BEGIN
     END IF;
 END$$
 
--- Trigger to ensure Gender is valid ENUM('M', 'F', 'O')
 CREATE TRIGGER before_player_insert_gender_check
 BEFORE INSERT ON Player
 FOR EACH ROW
@@ -80,7 +78,6 @@ BEGIN
     END IF;
 END$$
 
--- Trigger to ensure Role is valid
 CREATE TRIGGER before_player_insert_role_check
 BEFORE INSERT ON Player
 FOR EACH ROW
@@ -101,7 +98,6 @@ BEGIN
     END IF;
 END$$
 
--- Trigger to ensure Team_ID exists in Team table
 CREATE TRIGGER before_player_insert_team_check
 BEFORE INSERT ON Player
 FOR EACH ROW
