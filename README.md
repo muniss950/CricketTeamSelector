@@ -1,4 +1,4 @@
 # CricketTeamSelector
 Web App for cricket stats+team selection
 # Installation
-```To be done```
+```1.git clone https://github.com/muniss950/CricketTeamSelector```
