@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import './App.css';
 
@@ -22,7 +20,12 @@ const TableComponent = ({ data, onRowClick }) => {
         </thead>
         <tbody>
           {data.map((item, index) => (
-            <tr key={index} onClick={() => onRowClick(item)}>
+            <tr
+              key={index}
+              onClick={() => {
+                if (onRowClick) onRowClick(item); // Check if onRowClick is defined
+              }}
+            >
               {columns.map((column, colIndex) => (
                 <td key={colIndex}>
                   {/* Check if the value is null or undefined, then display 'N/A' */}
@@ -38,3 +41,4 @@ const TableComponent = ({ data, onRowClick }) => {
 };
 
 export default TableComponent;
+
