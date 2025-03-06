@@ -1,5 +1,7 @@
 # CricketTeamSelector
-Web App for cricket stats+team selection
+
+### Web App for cricket stats+team selection
+
 ![image](https://github.com/user-attachments/assets/bd9e9083-6f60-4729-9f71-eda3d8a8e563)
 
 # Schema 
