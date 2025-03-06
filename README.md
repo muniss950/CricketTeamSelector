@@ -1,5 +1,6 @@
 # CricketTeamSelector
 Web App for cricket stats+team selection
+![image](https://github.com/user-attachments/assets/bd9e9083-6f60-4729-9f71-eda3d8a8e563)
 
 # Schema 
 ![Alt text](./schema.png "Schema")
@@ -7,3 +8,4 @@ Web App for cricket stats+team selection
 ![Alt text](./er-diagram.png "ER-Diagram")
 # Installation
 ```1.git clone https://github.com/muniss950/CricketTeamSelector```
+
